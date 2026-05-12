@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DJ Queue</title>
+
+<!-- 🔥 FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+<style>
+body { background:#0a0a12; color:#fff; font-family:sans-serif; margin:0 }
+.container { max-width:600px; margin:auto; padding:30px }
+button { padding:12px; width:100%; margin-top:10px; border:none; border-radius:8px; cursor:pointer }
+.main { background:linear-gradient(135deg,#ff2d78,#bf00ff); color:#fff }
+.dj { background:linear-gradient(135deg,#00f0ff,#bf00ff) }
+input { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:none }
+.item { background:#111; padding:10px; margin-top:10px; border-radius:8px; display:flex; justify-content:space-between }
+.playing { border-left:4px solid cyan }
+</style>
+
+</head>
+
+<body>
+
+<!-- HOME -->
+<div id="home" class="container">
+  <h1>🎧 DJ QUEUE</h1>
+  <button class="main" onclick="goUser()">Faire une demande</button>
+  <button class="dj" onclick="askCode()">Accès DJ</button>
+</div>
+
+<!-- APP -->
+<div id="app" class="container" style="display:none;">
+  <h2>Ajouter une musique</h2>
+  <input id="song" placeholder="Titre / artiste">
+  <input id="name" placeholder="Ton prénom">
+  <button class="main" onclick="add()">Envoyer</button>
+
+  <h2>File d'attente</h2>
+  <div id="list"></div>
+</div>
+
+<script>
+/* 🔥 CONFIG FIREBASE */
+const firebaseConfig = {
+  apiKey: "AIzaSyAdyyVW-ZTn8O5RjGuq8JZeirY_kOlGxoQ",
+  authDomain: "dj-queu.firebaseapp.com",
+  databaseURL: "https://dj-queu-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "dj-queu",
+  storageBucket: "dj-queu.firebasestorage.app",
+  messagingSenderId: "95349182614",
+  appId: "1:95349182614:web:488bbfdfb5f9c02f39f2b7"
+};
+
+/* 🔥 INIT */
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const ref = db.ref("queue");
+
+let queue = [];
+let isDJ = false;
+
+/* NAV */
+function goUser(){
+  document.getElementById('home').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
+function askCode(){
+  const code = prompt("Code DJ ?");
+  if(code === "120916"){
+    isDJ = true;
+    goUser();
+  } else {
+    alert("Code incorrect");
+  }
+}
+
+/* ➕ AJOUT */
+function add(){
+  const song = document.getElementById('song').value.trim();
+  const name = document.getElementById('name').value.trim() || "Anonyme";
+
+  if(!song) return alert("Entre une musique");
+
+  ref.push({
+    song: song,
+    name: name,
+    time: Date.now()
+  });
+
+  document.getElementById('song').value='';
+  document.getElementById('name').value='';
+}
+
+/* ❌ SUPPRIMER */
+function remove(id){
+  if(!isDJ) return;
+  ref.child(id).remove();
+}
+
+/* 🔄 TEMPS RÉEL */
+ref.on("value", snapshot => {
+  const data = snapshot.val();
+
+  if(!data){
+    queue = [];
+  } else {
+    queue = Object.entries(data).map(([id,val]) => ({
+      id,
+      ...val
+    }));
+  }
+
+  render();
+});
+
+/* 🎨 RENDER */
+function render(){
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  queue.forEach((item,i)=>{
+    const div = document.createElement("div");
+    div.className = "item " + (i === 0 ? "playing" : "");
+
+    div.innerHTML = `
+      <div>
+        <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
+        <small>${item.name}</small>
+      </div>
+      ${isDJ ? `<button onclick="remove('${item.id}')">X</button>` : ""}
+    `;
+
+    list.appendChild(div);
+  });
+}
+</script>
+
+</body>
+</html>
