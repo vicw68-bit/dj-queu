@@ -10,20 +10,113 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <style>
-body { background:#0a0a12; color:#fff; font-family:sans-serif; margin:0 }
-.container { max-width:600px; margin:auto; padding:30px }
 
-button {
-  padding:12px;
-  width:100%;
-  margin-top:10px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+/* GLOBAL */
+body {
+  margin:0;
+  font-family:sans-serif;
+  background:#0a0a12;
+  color:#fff;
 }
 
-.main { background:linear-gradient(135deg,#ff2d78,#bf00ff); color:#fff }
-.dj { background:linear-gradient(135deg,#00f0ff,#bf00ff) }
+/* ========= HOME DESIGN (CANVA STYLE) ========= */
+
+.home {
+  height:100vh;
+  background:linear-gradient(180deg,#2c00c7,#1a0080);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:center;
+  padding:40px 20px;
+  box-sizing:border-box;
+  position:relative;
+}
+
+/* TOP */
+.top {
+  text-align:center;
+}
+
+.title {
+  font-size:80px;
+  color:#6ff4f0;
+  margin:0;
+}
+
+.subtitle {
+  color:#6ff4f0;
+  font-size:22px;
+  margin-top:10px;
+}
+
+/* MIDDLE */
+.middle {
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.who {
+  font-size:28px;
+  letter-spacing:2px;
+}
+
+/* BUTTONS */
+.buttons {
+  width:100%;
+  max-width:900px;
+
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:80px;
+
+  padding:0 40px;
+}
+
+.btn {
+  background:#d9d6d1;
+  border:none;
+  border-radius:50px;
+
+  padding:18px 0;
+
+  font-size:22px;
+  cursor:pointer;
+
+  transition:0.2s;
+}
+
+.btn:hover {
+  transform:scale(1.05);
+  background:#fff;
+}
+
+/* CREDIT */
+.credit {
+  position:absolute;
+  bottom:20px;
+  right:30px;
+  font-weight:bold;
+}
+
+/* ========= APP ========= */
+
+.container {
+  max-width:600px;
+  margin:auto;
+  padding:30px;
+}
+
+.main {
+  background:linear-gradient(135deg,#ff2d78,#bf00ff);
+  color:#fff;
+}
+
+.dj {
+  background:linear-gradient(135deg,#00f0ff,#bf00ff);
+}
 
 .back {
   background:#fff;
@@ -31,6 +124,7 @@ button {
   font-weight:bold;
 }
 
+/* INPUT */
 input, select {
   width:100%;
   padding:10px;
@@ -39,12 +133,12 @@ input, select {
   border:none;
 }
 
+/* LIST */
 .item {
   background:#111;
   padding:12px;
   margin-top:10px;
   border-radius:8px;
-  cursor:grab;
 }
 
 .row {
@@ -53,31 +147,47 @@ input, select {
   align-items:center;
 }
 
-.playing { border-left:4px solid cyan }
+.playing {
+  border-left:4px solid cyan;
+}
 
+/* DELETE */
 .delete {
   background:#fff;
   color:#000;
+  border:none;
   border-radius:50%;
   width:32px;
   height:32px;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:16px;
   cursor:pointer;
-  border:none;
 }
+
 </style>
 </head>
 
 <body>
 
 <!-- HOME -->
-<div id="home" class="container">
-  <h1>🎧 DJ QUEUE</h1>
-  <button class="main" onclick="goUser()">Faire une demande</button>
-  <button class="dj" onclick="askCode()">Accès DJ</button>
+<div id="home" class="home">
+
+  <div class="top">
+    <h1 class="title">DJ QUEUE</h1>
+    <p class="subtitle">Propose your song !</p>
+  </div>
+
+  <div class="middle">
+    <h2 class="who">WHO ARE YOU ?</h2>
+  </div>
+
+  <div class="buttons">
+    <button class="btn" onclick="askCode()">DJ</button>
+    <button class="btn" onclick="goUser()">ASKER</button>
+  </div>
+
+  <div class="credit">Made by : vico</div>
 </div>
 
 <!-- APP -->
@@ -85,7 +195,7 @@ input, select {
 
   <button class="back" onclick="goHome()">⬅ Retour menu</button>
 
-  <!-- DEMANDEUR -->
+  <!-- DEMANDE -->
   <div id="requestSection">
     <h2>Ajouter une musique</h2>
 
@@ -110,6 +220,8 @@ input, select {
 </div>
 
 <script>
+
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyAdyyVW-ZTn8O5RjGuq8JZeirY_kOlGxoQ",
   authDomain: "dj-queu.firebaseapp.com",
@@ -121,6 +233,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const ref = db.ref("queue");
 
+/* STATE */
 let queue = [];
 let isDJ = false;
 
@@ -132,9 +245,17 @@ function goUser(){
   document.getElementById('requestSection').style.display='block';
 }
 
+
 function goHome(){
-  document.getElementById('app').style.display='none';
-  document.getElementById('home').style.display='block';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('home').style.display = 'flex';
+
+  // ✅ force recalcul du layout
+  setTimeout(() => {
+    document.querySelector('.home').style.display = "none";
+    void document.querySelector('.home').offsetHeight; // force refresh
+    document.querySelector('.home').style.display = "flex";
+  }, 10);
 }
 
 function askCode(){
@@ -152,7 +273,7 @@ function askCode(){
   }
 }
 
-/* AJOUT */
+/* ADD */
 function add(){
   const song = document.getElementById('song').value.trim();
   const name = document.getElementById('name').value.trim() || "Anonyme";
@@ -160,24 +281,20 @@ function add(){
 
   if(!song) return alert("Entre une musique");
 
-  ref.push({
-    song,
-    name,
-    platform
-  });
+  ref.push({ song, name, platform });
 
   document.getElementById('song').value='';
   document.getElementById('name').value='';
   document.getElementById('platform').value='';
 }
 
-/* SUPPRESSION */
+/* REMOVE */
 function remove(id){
   if(!isDJ) return;
   ref.child(id).remove();
 }
 
-/* LIVE */
+/* REALTIME */
 ref.on("value", snapshot => {
   const data = snapshot.val();
 
@@ -188,16 +305,18 @@ ref.on("value", snapshot => {
   render();
 });
 
-/* DRAG & DROP */
+/* DRAG */
 let draggedIndex = null;
 
+/* RENDER */
 function render(){
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  queue.forEach((item,i)=>{
+  queue.forEach((item,i) => {
+
     const div = document.createElement("div");
-    div.className = "item " + (i===0 ? "playing" : "");
+    div.className = "item " + (i===0 ? "playing": "");
     div.draggable = isDJ;
 
     div.innerHTML = `
@@ -214,18 +333,19 @@ function render(){
       div.addEventListener("dragstart", () => draggedIndex = i);
       div.addEventListener("dragover", e => e.preventDefault());
       div.addEventListener("drop", () => {
-        const moved = queue.splice(draggedIndex,1)[0];
-        queue.splice(i,0,moved);
+        const move = queue.splice(draggedIndex,1)[0];
+        queue.splice(i,0,move);
 
-        const newData = {};
-        queue.forEach(q => newData[q.id] = q);
-        ref.set(newData);
+        const updated = {};
+        queue.forEach(q => updated[q.id] = q);
+        ref.set(updated);
       });
     }
 
     list.appendChild(div);
   });
 }
+
 </script>
 
 </body>
