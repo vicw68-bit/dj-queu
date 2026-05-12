@@ -19,17 +19,21 @@ body {
   color:#fff;
 }
 
-/* ========= HOME DESIGN (CANVA STYLE) ========= */
-
+/* 🔥 HOME DESIGN */
 .home {
   height:100vh;
-  background:linear-gradient(180deg,#2c00c7,#1a0080);
+  width:100%;
+
+  background:
+    radial-gradient(circle at 30% 20%, rgba(100,0,255,0.4), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(0,240,255,0.2), transparent 40%),
+    linear-gradient(180deg, #2c00c7, #0d003a);
+
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   align-items:center;
   padding:40px 20px;
-  box-sizing:border-box;
   position:relative;
 }
 
@@ -46,45 +50,71 @@ body {
 
 .subtitle {
   color:#6ff4f0;
-  font-size:22px;
+  font-size:20px;
   margin-top:10px;
 }
 
-/* MIDDLE */
-.middle {
+/* CENTER DISC */
+.center-visual {
   flex:1;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
+.disc {
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  background: radial-gradient(circle, #222 20%, #000 60%);
+  box-shadow:
+    0 0 20px rgba(0,240,255,0.4),
+    0 0 60px rgba(255,0,200,0.3);
+  animation:spin 6s linear infinite;
+}
+
+.disc::after {
+  content:"";
+  width:20px;
+  height:20px;
+  background:#999;
+  border-radius:50%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+}
+
+@keyframes spin {
+  from { transform:rotate(0deg); }
+  to { transform:rotate(360deg); }
+}
+
+/* BOTTOM */
+.bottom {
+  width:100%;
+  max-width:800px;
+  margin-bottom:40px;
+}
+
 .who {
-  font-size:28px;
+  margin-bottom:20px;
   letter-spacing:2px;
 }
 
-/* BUTTONS */
 .buttons {
-  width:100%;
-  max-width:900px;
-
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:80px;
-
-  padding:0 40px;
+  gap:60px;
 }
 
 .btn {
   background:#d9d6d1;
-  border:none;
   border-radius:50px;
-
-  padding:18px 0;
-
-  font-size:22px;
+  padding:16px 0;
+  font-size:20px;
+  border:none;
   cursor:pointer;
-
   transition:0.2s;
 }
 
@@ -93,38 +123,30 @@ body {
   background:#fff;
 }
 
-/* CREDIT */
 .credit {
   position:absolute;
   bottom:20px;
-  right:30px;
+  right:25px;
   font-weight:bold;
 }
 
-/* ========= APP ========= */
-
+/* APP */
 .container {
   max-width:600px;
   margin:auto;
   padding:30px;
 }
 
-.main {
-  background:linear-gradient(135deg,#ff2d78,#bf00ff);
-  color:#fff;
-}
-
-.dj {
-  background:linear-gradient(135deg,#00f0ff,#bf00ff);
-}
-
 .back {
   background:#fff;
   color:#000;
   font-weight:bold;
+  border:none;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
 }
 
-/* INPUT */
 input, select {
   width:100%;
   padding:10px;
@@ -133,7 +155,6 @@ input, select {
   border:none;
 }
 
-/* LIST */
 .item {
   background:#111;
   padding:12px;
@@ -151,7 +172,6 @@ input, select {
   border-left:4px solid cyan;
 }
 
-/* DELETE */
 .delete {
   background:#fff;
   color:#000;
@@ -178,24 +198,28 @@ input, select {
     <p class="subtitle">Propose your song !</p>
   </div>
 
-  <div class="middle">
-    <h2 class="who">WHO ARE YOU ?</h2>
+  <div class="center-visual">
+    <div class="disc"></div>
   </div>
 
-  <div class="buttons">
-    <button class="btn" onclick="askCode()">DJ</button>
-    <button class="btn" onclick="goUser()">ASKER</button>
+  <div class="bottom">
+    <h2 class="who">WHO ARE YOU ?</h2>
+
+    <div class="buttons">
+      <button class="btn" onclick="askCode()">DJ</button>
+      <button class="btn" onclick="goUser()">ASKER</button>
+    </div>
   </div>
 
   <div class="credit">Made by : vico</div>
+
 </div>
 
 <!-- APP -->
 <div id="app" class="container" style="display:none;">
 
-  <button class="back" onclick="goHome()">⬅ Retour menu</button>
+  <button class="back" onclick="location.reload()">⬅ Retour menu</button>
 
-  <!-- DEMANDE -->
   <div id="requestSection">
     <h2>Ajouter une musique</h2>
 
@@ -211,7 +235,7 @@ input, select {
       <option>SoundCloud</option>
     </select>
 
-    <button class="main" onclick="add()">Envoyer</button>
+    <button onclick="add()">Envoyer</button>
   </div>
 
   <h2>File d'attente</h2>
@@ -233,7 +257,6 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const ref = db.ref("queue");
 
-/* STATE */
 let queue = [];
 let isDJ = false;
 
@@ -243,19 +266,6 @@ function goUser(){
   document.getElementById('home').style.display='none';
   document.getElementById('app').style.display='block';
   document.getElementById('requestSection').style.display='block';
-}
-
-
-function goHome(){
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('home').style.display = 'flex';
-
-  // ✅ force recalcul du layout
-  setTimeout(() => {
-    document.querySelector('.home').style.display = "none";
-    void document.querySelector('.home').offsetHeight; // force refresh
-    document.querySelector('.home').style.display = "flex";
-  }, 10);
 }
 
 function askCode(){
@@ -268,15 +278,13 @@ function askCode(){
     document.getElementById('requestSection').style.display='none';
 
     render();
-  } else {
-    alert("Code incorrect");
   }
 }
 
 /* ADD */
 function add(){
   const song = document.getElementById('song').value.trim();
-  const name = document.getElementById('name').value.trim() || "Anonyme";
+  const name = document.getElementById('name').value || "Anonyme";
   const platform = document.getElementById('platform').value;
 
   if(!song) return alert("Entre une musique");
@@ -285,7 +293,6 @@ function add(){
 
   document.getElementById('song').value='';
   document.getElementById('name').value='';
-  document.getElementById('platform').value='';
 }
 
 /* REMOVE */
@@ -294,50 +301,44 @@ function remove(id){
   ref.child(id).remove();
 }
 
-/* REALTIME */
-ref.on("value", snapshot => {
-  const data = snapshot.val();
-
-  queue = data
-    ? Object.entries(data).map(([id,val]) => ({id,...val}))
-    : [];
-
+/* LIVE */
+ref.on("value", snap => {
+  const data = snap.val();
+  queue = data ? Object.entries(data).map(([id,val]) => ({id,...val})) : [];
   render();
 });
 
 /* DRAG */
 let draggedIndex = null;
 
-/* RENDER */
 function render(){
   const list = document.getElementById("list");
-  list.innerHTML = "";
+  list.innerHTML="";
 
-  queue.forEach((item,i) => {
-
+  queue.forEach((item,i)=>{
     const div = document.createElement("div");
-    div.className = "item " + (i===0 ? "playing": "");
-    div.draggable = isDJ;
+    div.className="item "+(i===0?"playing":"");
+    div.draggable=isDJ;
 
     div.innerHTML = `
       <div class="row">
         <div>
-          <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
-          <small>${item.name}${item.platform ? " • "+item.platform : ""}</small>
+          <strong>${i===0?"▶":i+1}</strong> ${item.song}<br>
+          <small>${item.name}</small>
         </div>
         ${isDJ ? `<button class="delete" onclick="remove('${item.id}')">✕</button>` : ""}
       </div>
     `;
 
     if(isDJ){
-      div.addEventListener("dragstart", () => draggedIndex = i);
-      div.addEventListener("dragover", e => e.preventDefault());
-      div.addEventListener("drop", () => {
-        const move = queue.splice(draggedIndex,1)[0];
-        queue.splice(i,0,move);
+      div.addEventListener("dragstart", ()=>draggedIndex=i);
+      div.addEventListener("dragover", e=>e.preventDefault());
+      div.addEventListener("drop", ()=>{
+        const moved = queue.splice(draggedIndex,1)[0];
+        queue.splice(i,0,moved);
 
-        const updated = {};
-        queue.forEach(q => updated[q.id] = q);
+        const updated={};
+        queue.forEach(q=>updated[q.id]=q);
         ref.set(updated);
       });
     }
