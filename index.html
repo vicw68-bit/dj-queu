@@ -5,21 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DJ Queue</title>
 
-<!-- 🔥 FIREBASE -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <style>
 body { background:#0a0a12; color:#fff; font-family:sans-serif; margin:0 }
 .container { max-width:600px; margin:auto; padding:30px }
+
 button { padding:12px; width:100%; margin-top:10px; border:none; border-radius:8px; cursor:pointer }
 .main { background:linear-gradient(135deg,#ff2d78,#bf00ff); color:#fff }
 .dj { background:linear-gradient(135deg,#00f0ff,#bf00ff) }
-input { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:none }
-.item { background:#111; padding:10px; margin-top:10px; border-radius:8px; display:flex; justify-content:space-between }
-.playing { border-left:4px solid cyan }
-</style>
+.back { background:#222 }
 
+input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:none }
+
+.item {
+  background:#111;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.playing { border-left:4px solid cyan }
+
+.delete {
+  background:red;
+  border:none;
+  color:#fff;
+  border-radius:50%;
+  width:30px;
+  height:30px;
+  cursor:pointer;
+}
+</style>
 </head>
 
 <body>
@@ -33,9 +55,44 @@ input { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:non
 
 <!-- APP -->
 <div id="app" class="container" style="display:none;">
+
+  <!-- ✅ BOUTON RETOUR -->
+  <button class="back" onclick="goHome()">⬅ Retour menu</button>
+
   <h2>Ajouter une musique</h2>
+
   <input id="song" placeholder="Titre / artiste">
   <input id="name" placeholder="Ton prénom">
+
+  <!-- ✅ MENU DEROUlant -->
+  <select id="platform">
+    <option value="">Plateforme (optionnel)</option>
+
+    <optgroup label="Streaming global">
+      <option>Spotify</option>
+      <option>YouTube</option>
+      <option>YouTube Music</option>
+      <option>Deezer</option>
+      <option>Apple Music</option>
+      <option>Amazon Music</option>
+      <option>Tidal</option>
+      <option>Qobuz</option>
+    </optgroup>
+
+    <optgroup label="Europe / spécialisés">
+      <option>SoundCloud</option>
+      <option>Mixcloud</option>
+      <option>Bandcamp</option>
+      <option>Beatport</option>
+      <option>Napster</option>
+      <option>Audiomack</option>
+    </optgroup>
+
+    <optgroup label="Autre">
+      <option>Autre</option>
+    </optgroup>
+  </select>
+
   <button class="main" onclick="add()">Envoyer</button>
 
   <h2>File d'attente</h2>
@@ -43,18 +100,13 @@ input { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:non
 </div>
 
 <script>
-/* 🔥 CONFIG FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyAdyyVW-ZTn8O5RjGuq8JZeirY_kOlGxoQ",
   authDomain: "dj-queu.firebaseapp.com",
   databaseURL: "https://dj-queu-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "dj-queu",
-  storageBucket: "dj-queu.firebasestorage.app",
-  messagingSenderId: "95349182614",
-  appId: "1:95349182614:web:488bbfdfb5f9c02f39f2b7"
+  projectId: "dj-queu"
 };
 
-/* 🔥 INIT */
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const ref = db.ref("queue");
@@ -68,6 +120,11 @@ function goUser(){
   document.getElementById('app').style.display='block';
 }
 
+function goHome(){
+  document.getElementById('app').style.display='none';
+  document.getElementById('home').style.display='block';
+}
+
 function askCode(){
   const code = prompt("Code DJ ?");
   if(code === "120916"){
@@ -78,46 +135,40 @@ function askCode(){
   }
 }
 
-/* ➕ AJOUT */
+/* ADD */
 function add(){
   const song = document.getElementById('song').value.trim();
   const name = document.getElementById('name').value.trim() || "Anonyme";
+  const platform = document.getElementById('platform').value;
 
   if(!song) return alert("Entre une musique");
 
   ref.push({
-    song: song,
-    name: name,
+    song,
+    name,
+    platform,
     time: Date.now()
   });
 
   document.getElementById('song').value='';
   document.getElementById('name').value='';
+  document.getElementById('platform').value='';
 }
 
-/* ❌ SUPPRIMER */
+/* DELETE DJ */
 function remove(id){
   if(!isDJ) return;
   ref.child(id).remove();
 }
 
-/* 🔄 TEMPS RÉEL */
+/* LIVE */
 ref.on("value", snapshot => {
   const data = snapshot.val();
-
-  if(!data){
-    queue = [];
-  } else {
-    queue = Object.entries(data).map(([id,val]) => ({
-      id,
-      ...val
-    }));
-  }
-
+  queue = data ? Object.entries(data).map(([id,val]) => ({id,...val})) : [];
   render();
 });
 
-/* 🎨 RENDER */
+/* RENDER */
 function render(){
   const list = document.getElementById("list");
   list.innerHTML = "";
@@ -129,9 +180,9 @@ function render(){
     div.innerHTML = `
       <div>
         <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
-        <small>${item.name}</small>
+        <small>${item.name}${item.platform ? " • " + item.platform : ""}</small>
       </div>
-      ${isDJ ? `<button onclick="remove('${item.id}')">X</button>` : ""}
+      ${isDJ ? `<button class="delete" onclick="remove('${item.id}')">✕</button>` : ""}
     `;
 
     list.appendChild(div);
