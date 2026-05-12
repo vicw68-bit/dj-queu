@@ -13,18 +13,41 @@
 body { background:#0a0a12; color:#fff; font-family:sans-serif; margin:0 }
 .container { max-width:600px; margin:auto; padding:30px }
 
-button { padding:12px; width:100%; margin-top:10px; border:none; border-radius:8px; cursor:pointer }
+button {
+  padding:12px;
+  width:100%;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
 .main { background:linear-gradient(135deg,#ff2d78,#bf00ff); color:#fff }
 .dj { background:linear-gradient(135deg,#00f0ff,#bf00ff) }
-.back { background:#222 }
 
-input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; border:none }
+.back {
+  background:#ffffff;
+  color:#000;
+  font-weight:bold;
+}
 
-.item {
-  background:#111;
+input, select {
+  width:100%;
   padding:10px;
   margin-top:10px;
   border-radius:8px;
+  border:none;
+}
+
+.item {
+  background:#111;
+  padding:12px;
+  margin-top:10px;
+  border-radius:8px;
+  cursor:grab;
+}
+
+.row {
   display:flex;
   justify-content:space-between;
   align-items:center;
@@ -32,13 +55,18 @@ input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; bo
 
 .playing { border-left:4px solid cyan }
 
+/* croix blanche centrée */
 .delete {
-  background:red;
+  background:#fff;
+  color:#000;
   border:none;
-  color:#fff;
   border-radius:50%;
-  width:30px;
-  height:30px;
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:18px;
   cursor:pointer;
 }
 </style>
@@ -56,19 +84,17 @@ input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; bo
 <!-- APP -->
 <div id="app" class="container" style="display:none;">
 
-  <!-- ✅ BOUTON RETOUR -->
   <button class="back" onclick="goHome()">⬅ Retour menu</button>
 
-  <h2>Ajouter une musique</h2>
+  <!-- ✅ ZONE DEMANDEUR -->
+  <div id="requestSection">
+    <h2>Ajouter une musique</h2>
 
-  <input id="song" placeholder="Titre / artiste">
-  <input id="name" placeholder="Ton prénom">
+    <input id="song" placeholder="Titre / artiste">
+    <input id="name" placeholder="Ton prénom">
 
-  <!-- ✅ MENU DEROUlant -->
-  <select id="platform">
-    <option value="">Plateforme (optionnel)</option>
-
-    <optgroup label="Streaming global">
+    <select id="platform">
+      <option value="">Plateforme (optionnel)</option>
       <option>Spotify</option>
       <option>YouTube</option>
       <option>YouTube Music</option>
@@ -77,26 +103,20 @@ input, select { width:100%; padding:10px; margin-top:10px; border-radius:8px; bo
       <option>Amazon Music</option>
       <option>Tidal</option>
       <option>Qobuz</option>
-    </optgroup>
-
-    <optgroup label="Europe / spécialisés">
       <option>SoundCloud</option>
       <option>Mixcloud</option>
       <option>Bandcamp</option>
       <option>Beatport</option>
       <option>Napster</option>
       <option>Audiomack</option>
-    </optgroup>
+    </select>
 
-    <optgroup label="Autre">
-      <option>Autre</option>
-    </optgroup>
-  </select>
-
-  <button class="main" onclick="add()">Envoyer</button>
+    <button class="main" onclick="add()">Envoyer</button>
+  </div>
 
   <h2>File d'attente</h2>
   <div id="list"></div>
+
 </div>
 
 <script>
@@ -116,8 +136,10 @@ let isDJ = false;
 
 /* NAV */
 function goUser(){
+  isDJ = false;
   document.getElementById('home').style.display='none';
   document.getElementById('app').style.display='block';
+  document.getElementById('requestSection').style.display='block';
 }
 
 function goHome(){
@@ -129,13 +151,17 @@ function askCode(){
   const code = prompt("Code DJ ?");
   if(code === "120916"){
     isDJ = true;
-    goUser();
+    document.getElementById('home').style.display='none';
+    document.getElementById('app').style.display='block';
+
+    // cacher ajout musique
+    document.getElementById('requestSection').style.display='none';
   } else {
     alert("Code incorrect");
   }
 }
 
-/* ADD */
+/* AJOUT */
 function add(){
   const song = document.getElementById('song').value.trim();
   const name = document.getElementById('name').value.trim() || "Anonyme";
@@ -143,19 +169,14 @@ function add(){
 
   if(!song) return alert("Entre une musique");
 
-  ref.push({
-    song,
-    name,
-    platform,
-    time: Date.now()
-  });
+  ref.push({ song, name, platform, time: Date.now() });
 
   document.getElementById('song').value='';
   document.getElementById('name').value='';
   document.getElementById('platform').value='';
 }
 
-/* DELETE DJ */
+/* SUPPRIMER */
 function remove(id){
   if(!isDJ) return;
   ref.child(id).remove();
@@ -168,22 +189,46 @@ ref.on("value", snapshot => {
   render();
 });
 
-/* RENDER */
+/* DRAG & DROP LIVE */
+let draggedIndex = null;
+
 function render(){
   const list = document.getElementById("list");
   list.innerHTML = "";
 
   queue.forEach((item,i)=>{
     const div = document.createElement("div");
-    div.className = "item " + (i === 0 ? "playing" : "");
+    div.className = "item " + (i===0 ? "playing":"");
+    div.draggable = isDJ;
 
     div.innerHTML = `
-      <div>
-        <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
-        <small>${item.name}${item.platform ? " • " + item.platform : ""}</small>
+      <div class="row">
+        <div>
+          <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
+          <small>${item.name}${item.platform ? " • "+item.platform : ""}</small>
+        </div>
+        ${isDJ ? `<button class="delete" onclick="remove('${item.id}')">✕</button>` : ""}
       </div>
-      ${isDJ ? `<button class="delete" onclick="remove('${item.id}')">✕</button>` : ""}
     `;
+
+    div.addEventListener("dragstart", () => {
+      draggedIndex = i;
+    });
+
+    div.addEventListener("dragover", e => e.preventDefault());
+
+    div.addEventListener("drop", () => {
+      if(draggedIndex === null) return;
+
+      const moved = queue.splice(draggedIndex,1)[0];
+      queue.splice(i,0,moved);
+
+      const newData = {};
+      queue.forEach(q => newData[q.id] = q);
+      ref.set(newData);
+
+      draggedIndex = null;
+    });
 
     list.appendChild(div);
   });
