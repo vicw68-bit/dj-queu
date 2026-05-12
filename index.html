@@ -147,12 +147,25 @@ function goHome(){
   document.getElementById('home').style.display='block';
 }
 
+
 function askCode(){
   const code = prompt("Code DJ ?");
   if(code === "120916"){
     isDJ = true;
+
     document.getElementById('home').style.display='none';
     document.getElementById('app').style.display='block';
+
+    document.getElementById('requestSection').style.display='none';
+
+    // ✅ FORCER LE REFRESH
+    render();
+
+  } else {
+    alert("Code incorrect");
+  }
+}
+
 
     // cacher ajout musique
     document.getElementById('requestSection').style.display='none';
