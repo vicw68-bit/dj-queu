@@ -729,14 +729,20 @@ function displayResults(data){
       <div>${track.artist.name} - ${track.title}</div>
     `;
 
-    div.onclick = () => {
-      songInput.value = track.artist.name + " - " + track.title;
+    
+div.onclick = () => {
 
-      songInput.dataset.link = track.link;
-      songInput.dataset.cover = track.album.cover_medium;
+  /* ✅ remplir séparément */
+  document.getElementById("song").value = track.title;
+  document.getElementById("name").value = track.artist.name;
 
-      resultsDiv.innerHTML = "";
-    };
+  /* ✅ stocker données */
+  songInput.dataset.link = track.link;
+  songInput.dataset.cover = track.album.cover_medium;
+
+  resultsDiv.innerHTML = "";
+};
+
 
     resultsDiv.appendChild(div);
   });
