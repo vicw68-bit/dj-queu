@@ -528,18 +528,23 @@ overflow: hidden; /* ✅ empêche débordement interne */
   margin: 0 auto;
 }
 
+
+#results {
+  width: 100%;
+}
+
 .result {
-  display:flex;
-  align-items:center;
-  gap:10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
   background: rgba(0,0,0,0.6);
-  margin-top:6px;
-  padding:8px;
-  border-radius:8px;
+  margin-top: 6px;
+  padding: 8px;
+  border-radius: 8px;
 
-  cursor:pointer;
-  transition:0.2s;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
 .result:hover {
@@ -547,10 +552,11 @@ overflow: hidden; /* ✅ empêche débordement interne */
 }
 
 .result img {
-  width:40px;
-  height:40px;
-  border-radius:6px;
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
 }
+
 
 body {
   display: flex;
@@ -673,58 +679,69 @@ function askCode(){
 }
 
 
+
 const songInput = document.getElementById("song");
 const resultsDiv = document.getElementById("results");
 
-let timer;
+let timeout = null;
 
 songInput.addEventListener("input", () => {
-  clearTimeout(timer);
+  clearTimeout(timeout);
 
   const query = songInput.value.trim();
+
   if(query.length < 2){
     resultsDiv.innerHTML = "";
     return;
   }
 
-  timer = setTimeout(async () => {
-    try {
-      const res = await fetch(
-        "https://api.deezer.com/search?q=" + query + "&output=jsonp"
-      );
-      const text = await res.text();
-      const json = JSON.parse(text.replace(/^[^(]+\(|\);?$/g, ""));
-
-      resultsDiv.innerHTML = "";
-
-      json.data.slice(0,5).forEach(track => {
-
-        const div = document.createElement("div");
-        div.className = "result";
-
-        div.innerHTML = `
-          <img src="${track.album.cover_small}">
-          <div>${track.artist.name} - ${track.title}</div>
-        `;
-
-        div.onclick = () => {
-          songInput.value = track.artist.name + " - " + track.title;
-
-          songInput.dataset.link = track.link;
-          songInput.dataset.cover = track.album.cover_medium;
-
-          resultsDiv.innerHTML = "";
-        };
-
-        resultsDiv.appendChild(div);
-
-      });
-
-    } catch(e){
-      console.log(e);
-    }
+  timeout = setTimeout(() => {
+    searchDeezer(query);
   }, 300);
 });
+
+/* ✅ JSONP */
+function searchDeezer(query){
+
+  const script = document.createElement("script");
+
+  script.src = "https://api.deezer.com/search?q=" 
+    + encodeURIComponent(query) 
+    + "&output=jsonp&callback=displayResults";
+
+  document.body.appendChild(script);
+}
+
+/* ✅ CALLBACK */
+function displayResults(data){
+
+  resultsDiv.innerHTML = "";
+
+  if(!data.data) return;
+
+  data.data.slice(0,5).forEach(track => {
+
+    const div = document.createElement("div");
+    div.className = "result";
+
+    div.innerHTML = `
+      <img src="${track.album.cover_small}">
+      <div>${track.artist.name} - ${track.title}</div>
+    `;
+
+    div.onclick = () => {
+      songInput.value = track.artist.name + " - " + track.title;
+
+      songInput.dataset.link = track.link;
+      songInput.dataset.cover = track.album.cover_medium;
+
+      resultsDiv.innerHTML = "";
+    };
+
+    resultsDiv.appendChild(div);
+  });
+}
+``
 
 /* ADD */
 
@@ -751,6 +768,12 @@ function add(){
 
   delete songInput.dataset.link;
  delete songInput.dataset.cover;
+
+document.addEventListener("click", (e) => {
+  if(!e.target.closest("#song") && !e.target.closest("#results")){
+    resultsDiv.innerHTML = "";
+  }
+});
 }
 
 
