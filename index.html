@@ -248,14 +248,39 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
 
 
 
+/* BLOQUE SCROLL GLOBAL */
 html, body {
   height: 100%;
   margin: 0;
   overflow: hidden;
   width: 100%;
-touch-action: manipulation;
+  touch-action: manipulation;
 }
 
+/* ✅ SCROLL POUR LES RESULTATS */
+#results {
+  width: 100%;
+
+  max-height: 30vh;
+  overflow-y: auto;
+
+  scroll-behavior: smooth;
+}
+
+/* ✅ SCROLL POUR LISTE DJ */
+#list {
+  width: 100%;
+
+  max-height: 40vh;
+  overflow-y: auto;
+
+  padding-right: 5px;
+}
+
+/* ✅ SCROLL MOBILE SMOOTH */
+#list, #results {
+  -webkit-overflow-scrolling: touch;
+}
 
 
 /* APP */
