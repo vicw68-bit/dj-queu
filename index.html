@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -25,76 +25,166 @@ body {
   width:100%;
 
   background:
-    radial-gradient(circle at 30% 20%, rgba(100,0,255,0.4), transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(0,240,255,0.2), transparent 40%),
+    radial-gradient(circle at 20% 20%, rgba(0,240,255,0.2), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(255,0,200,0.2), transparent 40%),
     linear-gradient(180deg, #2c00c7, #0d003a);
+
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+
+  animation: moveBg 8s ease-in-out infinite;
 
   display:flex;
   flex-direction:column;
   justify-content:space-between;
   align-items:center;
+
   padding:40px 20px;
   position:relative;
 }
 
+
 /* TOP */
 .top {
-  text-align:center;
+  margin-bottom: 20px;
+
+  display: flex;              /* ✅ important */
+  flex-direction: column;
+  align-items: center;        /* ✅ centre PAR RAPPORT AU TITRE */
 }
 
+/* TITLE (ne change pas) */
 .title {
-  font-size:80px;
-  color:#6ff4f0;
-  margin:0;
+  font-size: clamp(40px, 6vw, 70px);
+  color: #6ff4f0;
+
+  padding: 8px 25px;
+
+  border: 3px solid #6ff4f0;
+  border-radius: 12px;
+
+  display: inline-block;
+
+  text-shadow:
+    0 0 10px rgba(0,240,255,0.8),
+    0 0 20px rgba(0,240,255,0.6),
+    0 0 40px rgba(0,240,255,0.3);
+
+  box-shadow:
+    0 0 10px rgba(0,240,255,0.6),
+    0 0 30px rgba(255,0,200,0.4);
+
+  transition: 0.3s ease;
 }
 
-.subtitle {
-  color:#6ff4f0;
-  font-size:20px;
-  margin-top:10px;
+.title:hover {
+  box-shadow:
+    0 0 20px rgba(0,240,255,1),
+    0 0 50px rgba(0,240,255,0.8);
+
+  transform: scale(1.02);
 }
+
+/* SUBTITLE FIX ✅ */
+.subtitle {
+  margin-top: 10px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 22px;
+
+  background: linear-gradient(135deg,#00f0ff,#bf00ff);
+  color: white;
+
+  border-radius: 50px;
+
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+
+  font-size: 14px;
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+
+  box-shadow: 0 0 15px rgba(0,240,255,0.6);
+
+  backdrop-filter: blur(6px);
+
+  line-height: 1;
+}
+
 
 /* CENTER DISC */
 .center-visual {
-  flex:1;
+  flex:0.4;
   display:flex;
   align-items:center;
   justify-content:center;
 }
 
+/* 🔥 DISQUE SPIRALE */
 .disc {
-  width:160px;
-  height:160px;
+  width:440px;
+  height:440px;
   border-radius:50%;
-  background: radial-gradient(circle, #222 20%, #000 60%);
+  position: relative;
+
+  /* ✅ spirale + lignes propres */
+  background:
+    repeating-conic-gradient(
+      rgba(255,255,255,0.08) 0deg,
+      transparent 48deg
+    ),
+    repeating-radial-gradient(
+      circle,
+      #111 0px,
+      #111 5px,
+      #222 5px,
+      #222 10px
+    );
+
+  /* ✅ glow DJ */
   box-shadow:
-    0 0 20px rgba(0,240,255,0.4),
-    0 0 60px rgba(255,0,200,0.3);
-  animation:spin 6s linear infinite;
+    0 0 25px rgba(0,240,255,0.5),
+    0 0 80px rgba(255,0,200,0.4);
+
+  animation: spin 24s linear infinite;
 }
 
+
+/* ✅ CENTRE DU VINYLE */
 .disc::after {
   content:"";
-  width:20px;
-  height:20px;
+  width:120px;
+  height:120px;
   background:#999;
   border-radius:50%;
+
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%, -50%);
+
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
 }
 
+/* ✅ ANIMATION ROTATION */
 @keyframes spin {
-  from { transform:rotate(0deg); }
-  to { transform:rotate(360deg); }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* BOTTOM */
 .bottom {
   width:100%;
   max-width:800px;
-  margin-bottom:40px;
+  margin-bottom:70px;
+
+transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
+}
+
 }
 
 .who {
@@ -110,12 +200,43 @@ body {
 
 .btn {
   background:#d9d6d1;
-  border-radius:50px;
+  border-radius:40px;
   padding:16px 0;
   font-size:20px;
   border:none;
   cursor:pointer;
-  transition:0.2s;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* ✅ SURVOL = petit agrandissement */
+.btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+/* ✅ CLIC = effet appui */
+.btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+}
+
+.buttons .btn:first-child {
+  box-shadow: 0 0 15px rgba(0,240,255,0.6);
+}
+
+.buttons .btn:first-child:hover {
+  box-shadow: 0 0 30px rgba(0,240,255,1);
+}
+
+.buttons .btn:nth-child(2) {
+  box-shadow: 0 0 15px rgba(255,0,200,0.6);
+}
+
+.buttons .btn:nth-child(2):hover {
+  box-shadow: 0 0 30px rgba(255,0,200,1);
 }
 
 .btn:hover {
@@ -124,11 +245,19 @@ body {
 }
 
 .credit {
-  position:absolute;
-  bottom:20px;
-  right:25px;
-  font-weight:bold;
+  margin-top: 15px;
+  font-size: 13px;
+  opacity: 0.6;
 }
+
+html, body {
+  height: 100%;
+  overflow: hidden; /* ✅ empêche le scroll */
+}
+``
+
+<h1 class="title">QUEUE IT</h1>
+<p class="subtitle">Live playlist</p>
 
 /* APP */
 .container {
@@ -156,10 +285,17 @@ input, select {
 }
 
 .item {
-  background:#111;
+  
+ background: rgba(0,0,0,0.6);
   padding:12px;
   margin-top:10px;
   border-radius:8px;
+
+  transition: transform 0.2s;
+}
+  backdrop-filter: blur(8px);
+
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 .row {
@@ -169,7 +305,10 @@ input, select {
 }
 
 .playing {
-  border-left:4px solid cyan;
+  border-left: 4px solid cyan;
+  box-shadow: 0 0 15px rgba(0,240,255,0.6);
+}
+
 }
 
 .delete {
@@ -185,7 +324,58 @@ input, select {
   cursor:pointer;
 }
 
+.background {
+  height: 100vh; /* ✅ important */
+  overflow: hidden; /* ✅ plus de scroll */
+
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,240,255,0.2), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(255,0,200,0.2), transparent 40%),
+    linear-gradient(180deg, #2c00c7, #0d003a);
+
+  display:flex;
+  flex-direction:column;
+
+
+  /* ✅ IMPORTANT */
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+ 
+ box-sizing: border-box;
+}
+
+@keyframes moveBg {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 50% 100%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  75% {
+    background-position: 50% 0%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.delete:hover {
+  background:#ff2d78;
+  color:white;
+}
+
+.item:hover {
+  transform: translateX(6px);
+  transition:0.2s;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -194,37 +384,38 @@ input, select {
 <div id="home" class="home">
 
   <div class="top">
-    <h1 class="title">DJ QUEUE</h1>
-    <p class="subtitle">Propose your song !</p>
+    <h1 class="title">QUEUE IT</h1>
+    <p class="subtitle">DROP YOUR TRACK 🎧</p>
   </div>
 
   <div class="center-visual">
     <div class="disc"></div>
   </div>
 
-  <div class="bottom">
-    <h2 class="who">WHO ARE YOU ?</h2>
+<div class="bottom">
+  <h2 class="who">WHO ARE YOU ?</h2>
 
-    <div class="buttons">
-      <button class="btn" onclick="askCode()">DJ</button>
-      <button class="btn" onclick="goUser()">ASKER</button>
-    </div>
+  <div class="buttons">
+    <button class="btn" onclick="askCode()">DJ</button>
+    <button class="btn" onclick="goUser()">ASKER</button>
   </div>
 
   <div class="credit">Made by : vico</div>
-
 </div>
+ </div>
 
 <!-- APP -->
-<div id="app" class="container" style="display:none;">
+
+<div id="app" class="background" style="display:none;">
+
 
   <button class="back" onclick="location.reload()">⬅ Retour menu</button>
 
   <div id="requestSection">
     <h2>Ajouter une musique</h2>
 
-    <input id="song" placeholder="Titre / artiste">
-    <input id="name" placeholder="Ton prénom">
+    <input id="song" placeholder="Titre">
+    <input id="name" placeholder="Artiste">
 
     <select id="platform">
       <option value="">Plateforme</option>
