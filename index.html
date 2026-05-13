@@ -10,6 +10,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
 
 /* GLOBAL */
 body {
@@ -262,9 +265,13 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
   opacity: 0.6;
 }
 
+
+
 html, body {
   height: 100%;
-  overflow: hidden; /* ✅ empêche le scroll */
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
 touch-action: manipulation;
 }
 
@@ -349,6 +356,7 @@ html, body {
   height: 100vh;
   width: 100%;
 
+margin: 0;
   overflow: hidden;
 
   background:
@@ -366,8 +374,10 @@ html, body {
   justify-content: center;
   align-items: center;
 
-  padding: 20px;
+  padding: 15px;
   box-sizing: border-box;
+
+overflow: hidden; /* ✅ empêche débordement interne */
 }
 
 /* ✅ ANIMATION FOND */
@@ -462,6 +472,14 @@ html, body {
     font-size: 16px;
     margin-bottom: 10px;
   }
+}
+
+.container,
+.top,
+.bottom {
+  width: 100%;
+  max-width: 500px; /* ✅ limite largeur mobile */
+  margin: 0 auto;
 }
 
 </style>
