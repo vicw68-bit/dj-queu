@@ -22,30 +22,6 @@ body {
   color:#fff;
 }
 
-/* 🔥 HOME DESIGN */
-.home {
-  height:100vh;
-  width:100%;
-
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,240,255,0.2), transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(255,0,200,0.2), transparent 40%),
-    linear-gradient(180deg, #2c00c7, #0d003a);
-
-  background-size: 200% 200%;
-  background-position: 0% 50%;
-
-  animation: moveBg 8s ease-in-out infinite;
-
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  align-items:center;
-
-  padding:40px 20px;
-  position:relative;
-}
-
 
 /* TOP */
 .top {
@@ -57,36 +33,44 @@ body {
 }
 
 /* TITLE (ne change pas) */
-.title {
-  font-size: clamp(40px, 6vw, 70px);
-  color: #6ff4f0;
+.title {.title-size: clamp(40px, 6vw, 70px) !important;
+  color: #6ff4f0 !important;
 
-  padding: 8px 25px;
+  padding: 12px 30px !important;
 
-  border: 3px solid #6ff4f0;
-  border-radius: 12px;
+  border: 3px solid #6ff4f0 !important; /* ✅ cadre forcé */
 
-  display: inline-block;
+  border-radius: 12px !important;
+
+  display: inline-block !important;
+  cursor: pointer;
 
   text-shadow:
-    0 0 10px rgba(0,240,255,0.8),
-    0 0 20px rgba(0,240,255,0.6),
-    0 0 40px rgba(0,240,255,0.3);
+    0 0 10px rgba(0,240,255,0.9),
+    0 0 20px rgba(0,240,255,0.8) !important;
 
   box-shadow:
-    0 0 10px rgba(0,240,255,0.6),
-    0 0 30px rgba(255,0,200,0.4);
+    0 0 20px rgba(0,240,255,0.8),
+    0 0 40px rgba(255,0,200,0.5) !important;
 
-  transition: 0.3s ease;
+  transition: all 0.2s ease !important;
 }
+
 
 .title:hover {
+  transform: scale(1.08);
   box-shadow:
-    0 0 20px rgba(0,240,255,1),
-    0 0 50px rgba(0,240,255,0.8);
-
-  transform: scale(1.02);
+    0 0 25px rgba(0,240,255,1),
+    0 0 60px rgba(255,0,200,0.5);
 }
+
+/* effet clic */
+.title:active {
+  transform: scale(0.92);
+  box-shadow:
+    0 0 10px rgba(0,240,255,0.6);
+}
+
 
 /* SUBTITLE FIX ✅ */
 .subtitle {
@@ -192,15 +176,16 @@ body {
 }
 
 /* BOTTOM */
+
 .bottom {
-  width:100%;
-  max-width:800px;
-  margin-bottom:70px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
 
 transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
 }
 
-}
 
 .who {
   margin-bottom:20px;
@@ -254,10 +239,6 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
   box-shadow: 0 0 30px rgba(255,0,200,1);
 }
 
-.btn:hover {
-  transform:scale(1.05);
-  background:#fff;
-}
 
 .credit {
   margin-top: 15px;
@@ -276,14 +257,16 @@ touch-action: manipulation;
 }
 
 
-<h1 class="title">QUEUE IT</h1>
-<p class="subtitle">Live playlist</p>
 
 /* APP */
 .container {
-  max-width:600px;
-  margin:auto;
-  padding:30px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .back {
@@ -305,44 +288,66 @@ input, select {
 }
 
 .item {
-  
- background: rgba(0,0,0,0.6);
-  padding:12px;
-  margin-top:10px;
-  border-radius:8px;
+  background: rgba(0,0,0,0.6);
+
+  padding: 18px; /* ✅ plus grand */
+  margin-top: 12px;
+
+  border-radius: 12px;
+
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.1);
+
+  font-size: 18px; /* ✅ texte plus grand */
 
   transition: transform 0.2s;
 }
-  backdrop-filter: blur(8px);
+``
 
-  border: 1px solid rgba(255,255,255,0.1);
+.item strong {
+  font-size: 20px; /* numéro + titre */
+}
+
+.item small {
+  font-size: 14px;
+  opacity: 0.8;
+}
+.item:hover {
+  transform: scale(1.02);  /* ✅ léger zoom */
 }
 
 .row {
   display:flex;
   justify-content:space-between;
   align-items:center;
+
+  gap: 10px; /* ✅ espace propre */
 }
+
 
 .playing {
   border-left: 4px solid cyan;
   box-shadow: 0 0 15px rgba(0,240,255,0.6);
 }
 
-}
+
 
 .delete {
-  background:#fff;
-  color:#000;
-  border:none;
-  border-radius:50%;
-  width:32px;
-  height:32px;
+  width: 40px;   /* ✅ plus gros */
+  height: 40px;
+
+  font-size: 18px;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
+  border-radius:50%;
+
   cursor:pointer;
 }
+``
+
 
 /* ✅ GLOBAL LOCK */
 html, body {
@@ -428,9 +433,44 @@ overflow: hidden; /* ✅ empêche débordement interne */
 
   /* ✅ TITRE */
   .title {
-    font-size: clamp(30px, 8vw, 50px);
-    padding: 6px 15px;
-  }
+  font-size: clamp(40px, 6vw, 70px);
+  color: #6ff4f0;
+
+  padding: 10px 30px;
+
+  border: 3px solid #6ff4f0; /* ✅ cadre */
+
+  border-radius: 12px;
+
+  display: inline-block; 
+  cursor: pointer;
+
+  /* ✅ glow texte */
+  text-shadow:
+    0 0 8px rgba(0,240,255,0.9),
+    0 0 20px rgba(0,240,255,0.8);
+
+  /* ✅ glow cadre */
+  box-shadow:
+    0 0 15px rgba(0,240,255,0.7),
+    0 0 40px rgba(255,0,200,0.4);
+
+  transition: all 0.2s ease;
+}
+
+.title:hover {
+  transform: scale(1.1);
+
+  box-shadow:
+    0 0 25px rgba(0,240,255,1),
+    0 0 60px rgba(255,0,200,0.6);
+}
+
+/* clic */
+.title:active {
+  transform: scale(0.9);
+}
+
 
   /* ✅ SUBTITLE */
   .subtitle {
@@ -474,12 +514,48 @@ overflow: hidden; /* ✅ empêche débordement interne */
   }
 }
 
-.container,
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
 .top,
 .bottom {
   width: 100%;
   max-width: 500px; /* ✅ limite largeur mobile */
   margin: 0 auto;
+}
+
+.result {
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  background: rgba(0,0,0,0.6);
+  margin-top:6px;
+  padding:8px;
+  border-radius:8px;
+
+  cursor:pointer;
+  transition:0.2s;
+}
+
+.result:hover {
+  transform: scale(1.03);
+}
+
+.result img {
+  width:40px;
+  height:40px;
+  border-radius:6px;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 </style>
@@ -489,10 +565,10 @@ overflow: hidden; /* ✅ empêche débordement interne */
 <body>
 
 <!-- HOME -->
-<div id="home" class="home">
+<div id="home" class="background">
 
   <div class="top">
-    <h1 class="title">QUEUE IT</h1>
+    <h1 class="title" onclick="goChoice()">QUEUE IT</h1>
     <p class="subtitle">DROP YOUR TRACK 🎧</p>
   </div>
 
@@ -500,7 +576,14 @@ overflow: hidden; /* ✅ empêche débordement interne */
     <div class="disc"></div>
   </div>
 
-<div class="bottom">
+
+  <div class="credit">Made by : vico</div>
+</div>
+ </div>
+
+<!-- PAGE 2 : CHOIX -->
+<div id="choice" class="background" style="display:none;">
+
   <h2 class="who">WHO ARE YOU ?</h2>
 
   <div class="buttons">
@@ -508,9 +591,8 @@ overflow: hidden; /* ✅ empêche débordement interne */
     <button class="btn" onclick="goUser()">ASKER</button>
   </div>
 
-  <div class="credit">Made by : vico</div>
 </div>
- </div>
+
 
 <!-- APP -->
 
@@ -524,6 +606,7 @@ overflow: hidden; /* ✅ empêche débordement interne */
 
     <input id="song" placeholder="Titre">
     <input id="name" placeholder="Artiste">
+<div id="results"></div>
 
     <select id="platform">
       <option value="">Plateforme</option>
@@ -560,11 +643,19 @@ let queue = [];
 let isDJ = false;
 
 /* NAV */
+
 function goUser(){
   isDJ = false;
-  document.getElementById('home').style.display='none';
-  document.getElementById('app').style.display='block';
-  document.getElementById('requestSection').style.display='block';
+
+  document.getElementById("choice").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+
+  document.getElementById("requestSection").style.display = "block";
+}
+
+function goChoice(){
+  document.getElementById("home").style.display = "none";
+  document.getElementById("choice").style.display = "flex";
 }
 
 function askCode(){
@@ -572,27 +663,96 @@ function askCode(){
   if(code === "120916"){
     isDJ = true;
 
-    document.getElementById('home').style.display='none';
-    document.getElementById('app').style.display='block';
-    document.getElementById('requestSection').style.display='none';
+    document.getElementById("choice").style.display = "none";
+    document.getElementById("app").style.display = "flex";
 
-    render();
+    document.getElementById("requestSection").style.display = "none";
+
+    render(); // ✅ IMPORTANT
   }
 }
 
+
+const songInput = document.getElementById("song");
+const resultsDiv = document.getElementById("results");
+
+let timer;
+
+songInput.addEventListener("input", () => {
+  clearTimeout(timer);
+
+  const query = songInput.value.trim();
+  if(query.length < 2){
+    resultsDiv.innerHTML = "";
+    return;
+  }
+
+  timer = setTimeout(async () => {
+    try {
+      const res = await fetch(
+        "https://api.deezer.com/search?q=" + query + "&output=jsonp"
+      );
+      const text = await res.text();
+      const json = JSON.parse(text.replace(/^[^(]+\(|\);?$/g, ""));
+
+      resultsDiv.innerHTML = "";
+
+      json.data.slice(0,5).forEach(track => {
+
+        const div = document.createElement("div");
+        div.className = "result";
+
+        div.innerHTML = `
+          <img src="${track.album.cover_small}">
+          <div>${track.artist.name} - ${track.title}</div>
+        `;
+
+        div.onclick = () => {
+          songInput.value = track.artist.name + " - " + track.title;
+
+          songInput.dataset.link = track.link;
+          songInput.dataset.cover = track.album.cover_medium;
+
+          resultsDiv.innerHTML = "";
+        };
+
+        resultsDiv.appendChild(div);
+
+      });
+
+    } catch(e){
+      console.log(e);
+    }
+  }, 300);
+});
+
 /* ADD */
+
 function add(){
-  const song = document.getElementById('song').value.trim();
-  const name = document.getElementById('name').value || "Anonyme";
-  const platform = document.getElementById('platform').value;
+  const song = document.getElementById("song").value.trim();
+  const name = document.getElementById("name").value || "Anonyme";
+  const platform = document.getElementById("platform").value;
+
+  const link = songInput.dataset.link || "";
+  const cover = songInput.dataset.cover || "";
 
   if(!song) return alert("Entre une musique");
 
-  ref.push({ song, name, platform });
+  ref.push({
+    song,
+    name,
+    platform,
+    link,
+    cover
+  });
 
-  document.getElementById('song').value='';
-  document.getElementById('name').value='';
+  document.getElementById("song").value = "";
+  document.getElementById("name").value = "";
+
+  delete songInput.dataset.link;
+ delete songInput.dataset.cover;
 }
+
 
 /* REMOVE */
 function remove(id){
@@ -612,32 +772,37 @@ let draggedIndex = null;
 
 function render(){
   const list = document.getElementById("list");
-  list.innerHTML="";
+  list.innerHTML = "";
 
   queue.forEach((item,i)=>{
     const div = document.createElement("div");
-    div.className="item "+(i===0?"playing":"");
-    div.draggable=isDJ;
+    div.className = "item " + (i===0 ? "playing" : "");
+    div.draggable = isDJ;
 
     div.innerHTML = `
       <div class="row">
         <div>
-          <strong>${i===0?"▶":i+1}</strong> ${item.song}<br>
+          <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
           <small>${item.name}</small>
         </div>
-        ${isDJ ? `<button class="delete" onclick="remove('${item.id}')">✕</button>` : ""}
+        ${
+          isDJ
+            ? `<button class="delete" onclick="remove('${item.id}')">✕</button>`
+            : ""
+        }
       </div>
     `;
 
+    /* DRAG */
     if(isDJ){
-      div.addEventListener("dragstart", ()=>draggedIndex=i);
-      div.addEventListener("dragover", e=>e.preventDefault());
+      div.addEventListener("dragstart", () => draggedIndex = i);
+      div.addEventListener("dragover", e => e.preventDefault());
       div.addEventListener("drop", ()=>{
         const moved = queue.splice(draggedIndex,1)[0];
         queue.splice(i,0,moved);
 
-        const updated={};
-        queue.forEach(q=>updated[q.id]=q);
+        const updated = {};
+        queue.forEach(q => updated[q.id] = q);
         ref.set(updated);
       });
     }
@@ -645,7 +810,7 @@ function render(){
     list.appendChild(div);
   });
 }
-
+``
 </script>
 
 </body>
