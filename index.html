@@ -337,46 +337,49 @@ input, select {
   cursor:pointer;
 }
 
+/* ✅ GLOBAL LOCK */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+}
+
+/* ✅ BACKGROUND */
 .background {
-  height: 100vh; /* ✅ important */
-  overflow: hidden; /* ✅ plus de scroll */
+  height: 100vh;
+  width: 100%;
+
+  overflow: hidden;
 
   background:
     radial-gradient(circle at 20% 20%, rgba(0,240,255,0.2), transparent 40%),
     radial-gradient(circle at 80% 80%, rgba(255,0,200,0.2), transparent 40%),
     linear-gradient(180deg, #2c00c7, #0d003a);
 
-  display:flex;
-  flex-direction:column;
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  animation: moveBg 8s ease-in-out infinite;
 
+  display: flex;
+  flex-direction: column;
 
-  /* ✅ IMPORTANT */
   justify-content: center;
   align-items: center;
 
   padding: 20px;
- 
- box-sizing: border-box;
+  box-sizing: border-box;
 }
 
+/* ✅ ANIMATION FOND */
 @keyframes moveBg {
-  0% {
-    background-position: 0% 50%;
-  }
-  25% {
-    background-position: 50% 100%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  75% {
-    background-position: 50% 0%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  25% { background-position: 50% 100%; }
+  50% { background-position: 100% 50%; }
+  75% { background-position: 50% 0%; }
+  100% { background-position: 0% 50%; }
 }
 
+/* ✅ HOVER LISTE */
 .delete:hover {
   background:#ff2d78;
   color:white;
@@ -387,12 +390,30 @@ input, select {
   transition:0.2s;
 }
 
-/* 📱 VERSION MOBILE */
+/* ✅ MOBILE FIX PERFECT */
 @media screen and (max-width: 768px) {
 
-  /* 🔥 réduire taille globale */
   body {
     font-size: 14px;
+  }
+
+  /* ✅ CENTRAGE GLOBAL */
+  .background {
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+  }
+
+  /* ✅ CONTENU CENTRÉ */
+  .top {
+    text-align: center;
+    width: 100%;
+  }
+
+  .bottom {
+    width: 100%;
+    max-width: 350px;
+    transform: translateY(-15px);
   }
 
   /* ✅ TITRE */
@@ -410,13 +431,13 @@ input, select {
 
   /* ✅ DISQUE */
   .disc {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
   }
 
   .disc::after {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
   }
 
   /* ✅ ESPACES */
@@ -424,26 +445,23 @@ input, select {
     margin-bottom: 10px;
   }
 
-  .bottom {
-    transform: translateY(-20px);
-  }
-
   /* ✅ BOUTONS */
   .buttons {
-    gap: 20px;
+    gap: 15px;
+    width: 100%;
   }
 
   .btn {
     font-size: 14px;
     padding: 10px 0;
+    width: 100%;
   }
 
-  /* ✅ WHO */
+  /* ✅ TEXTE */
   .who {
     font-size: 16px;
     margin-bottom: 10px;
   }
-
 }
 
 </style>
