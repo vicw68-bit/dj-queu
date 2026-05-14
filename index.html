@@ -105,16 +105,18 @@ body {
 
 /* CENTER DISC */
 .center-visual {
-  flex:0.4;
+  flex:0;
   display:flex;
   align-items:center;
   justify-content:center;
+  position: relative;
+  z-index: 1;
 }
 
 /* 🔥 DISQUE SPIRALE */
 .disc {
-  width:440px;
-  height:440px;
+  width:380px;
+  height:380px;
   border-radius:50%;
   position: relative;
 
@@ -181,34 +183,60 @@ body {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
-}
-
 transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
+
 }
 
+}
+
+.top {
+  margin-bottom: 0;
+  gap: 5px; /* ✅ rapproche QUEUE IT et hint */
+}
 
 .who {
   margin-bottom:20px;
   letter-spacing:2px;
 }
 
+
+
 .buttons {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:60px;
+  display: flex;               /* ✅ change grid → flex */
+  justify-content: center;     /* ✅ centre le groupe */
+  align-items: center;
+
+  gap: 30px;                   /* ✅ espace propre */
+  
+  width: 100%;
+  max-width: 500px;            /* ✅ bloc centré */
+  margin: 0 auto;              /* ✅ centre global */
 }
+
 
 .btn {
   background:#d9d6d1;
-  border-radius:40px;
-  padding:16px 0;
-  font-size:20px;
+
+  border-radius: 20px; /* ✅ au lieu de cercle */
+
+  padding: 22px 0;
+  font-size: 22px;
+
   border:none;
   cursor:pointer;
 
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  width:100%;
+  max-width:180px; /* ✅ limite la largeur */
 
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+
+  transition:0.2s;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
 /* ✅ SURVOL = petit agrandissement */
@@ -239,9 +267,47 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
   box-shadow: 0 0 30px rgba(255,0,200,1);
 }
 
+.send-btn {
+  margin-top: 15px;
+
+  width: 100%;
+
+  padding: 18px 0;
+  font-size: 18px;
+  font-weight: bold;
+
+  border: none;
+  border-radius: 50px;
+
+  color: white;
+
+  background: linear-gradient(135deg,#00f0ff,#bf00ff);
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  /* ✅ glow */
+  box-shadow:
+    0 0 15px rgba(0,240,255,0.6),
+    0 0 40px rgba(255,0,200,0.4);
+}
+
+.send-btn:hover {
+  transform: scale(1.05);
+
+  box-shadow:
+    0 0 25px rgba(0,240,255,1),
+    0 0 60px rgba(255,0,200,0.6);
+}
+
+.send-btn:active {
+  transform: scale(0.95);
+}
+
 
 .credit {
-  margin-top: 15px;
+  margin-top: -18px;
   font-size: 13px;
   opacity: 0.6;
 }
@@ -439,7 +505,11 @@ overflow: hidden; /* ✅ empêche débordement interne */
 
   /* ✅ CENTRAGE GLOBAL */
   .background {
-    justify-content: center;
+
+display: flex;
+  flex-direction: column;
+  justify-content: center; /* ✅ beaucoup mieux */
+  gap: 20px; /* ✅ espace maîtrisé */
     align-items: center;
     padding: 15px;
   }
@@ -449,6 +519,11 @@ overflow: hidden; /* ✅ empêche débordement interne */
     text-align: center;
     width: 100%;
   }
+
+.top {
+  position: relative;
+  z-index: 2; /* ✅ AU-DESSUS du disque */
+}
 
   .bottom {
     width: 100%;
@@ -522,9 +597,10 @@ overflow: hidden; /* ✅ empêche débordement interne */
 
   /* ✅ BOUTONS */
   .buttons {
-    gap: 15px;
-    width: 100%;
-  }
+  display:flex;
+  justify-content:center; /* ✅ centre */
+  gap:40px; /* ✅ espace propre */
+}
 
   .btn {
     font-size: 14px;
@@ -589,6 +665,79 @@ body {
   align-items: center;
 }
 
+.feedback {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  background: linear-gradient(135deg,#00f0ff,#bf00ff);
+  color: white;
+
+  padding: 12px 25px;
+  border-radius: 30px;
+
+  font-size: 14px;
+
+  box-shadow:
+    0 0 15px rgba(0,240,255,0.6);
+
+  animation: fadeUp 2s ease;
+}
+
+@keyframes fadeUp {
+  0% { opacity: 0; transform: translate(-50%,20px); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%,-10px); }
+}
+
+.hint {
+  margin-top: -25px;
+
+  font-size: 14px;
+  opacity: 0.7;
+
+  animation: blink 1.2s infinite;
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 5px; /* ✅ rapproche titre + hint */
+}
+
+.bottom-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+}
+.page {
+  transition: opacity 0.4s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.visible {
+  opacity: 1;
+  position: relative;
+}
+
+@keyframes blink {
+  0% { opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { opacity: 0.4; }
+}
+  margin-top: 10px;
+
+
 </style>
 
 </head>
@@ -600,15 +749,18 @@ body {
 
   <div class="top">
     <h1 class="title" onclick="goChoice()">QUEUE IT</h1>
-    <p class="subtitle">DROP YOUR TRACK 🎧</p>
+    <p class="hint">Tap to start</p>
   </div>
 
   <div class="center-visual">
     <div class="disc"></div>
   </div>
 
+  <div class="bottom-home">
+    <p class="subtitle">DROP YOUR TRACK 🎧</p>
+    <div class="credit">Made by : vico</div>
+  </div>
 
-  <div class="credit">Made by : vico</div>
 </div>
  </div>
 
@@ -626,6 +778,7 @@ body {
 
 
 <!-- APP -->
+
 
 <div id="app" class="background" style="display:none;">
 
@@ -648,7 +801,7 @@ body {
       <option>SoundCloud</option>
     </select>
 
-    <button onclick="add()">Envoyer</button>
+    <button class="send-btn" onclick="add()">SEND 🎧</button>
   </div>
 
   <h2>File d'attente</h2>
@@ -706,23 +859,30 @@ function askCode(){
 
 
 const songInput = document.getElementById("song");
+const artistInput = document.getElementById("name");
 const resultsDiv = document.getElementById("results");
 
 let timeout = null;
 
-songInput.addEventListener("input", () => {
-  clearTimeout(timeout);
+/* ✅ écouter les deux champs */
+[songInput, artistInput].forEach(input => {
+  input.addEventListener("input", () => {
+    clearTimeout(timeout);
 
-  const query = songInput.value.trim();
+    const song = songInput.value.trim();
+    const artist = artistInput.value.trim();
 
-  if(query.length < 2){
-    resultsDiv.innerHTML = "";
-    return;
-  }
+    const query = (song + " " + artist).trim();
 
-  timeout = setTimeout(() => {
-    searchDeezer(query);
-  }, 300);
+    if(query.length < 2){
+      resultsDiv.innerHTML = "";
+      return;
+    }
+
+    timeout = setTimeout(() => {
+      searchDeezer(query);
+    }, 300);
+  });
 });
 
 /* ✅ JSONP */
@@ -757,11 +917,10 @@ function displayResults(data){
     
 div.onclick = () => {
 
-  /* ✅ remplir séparément */
-  document.getElementById("song").value = track.title;
-  document.getElementById("name").value = track.artist.name;
+  /* ✅ remplissage propre */
+  songInput.value = track.title;
+  artistInput.value = track.artist.name;
 
-  /* ✅ stocker données */
   songInput.dataset.link = track.link;
   songInput.dataset.cover = track.album.cover_medium;
 
@@ -794,11 +953,15 @@ function add(){
     cover
   });
 
+  /* reset */
   document.getElementById("song").value = "";
   document.getElementById("name").value = "";
 
   delete songInput.dataset.link;
- delete songInput.dataset.cover;
+  delete songInput.dataset.cover;
+
+  /* ✅ FEEDBACK */
+  showFeedback("Track added ✅");
 
 document.addEventListener("click", (e) => {
   if(!e.target.closest("#song") && !e.target.closest("#results")){
@@ -821,8 +984,22 @@ ref.on("value", snap => {
   render();
 });
 
+function showFeedback(text){
+  const msg = document.createElement("div");
+  msg.className = "feedback";
+  msg.innerText = text;
+
+  document.body.appendChild(msg);
+
+  setTimeout(()=>{
+    msg.remove();
+  }, 2000);
+}
+
 /* DRAG */
 let draggedIndex = null;
+
+
 
 function render(){
   const list = document.getElementById("list");
@@ -846,6 +1023,7 @@ function render(){
         }
       </div>
     `;
+
 
     /* DRAG */
     if(isDJ){
