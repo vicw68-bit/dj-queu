@@ -1086,7 +1086,10 @@ function render(){
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  queue.forEach((item,i)=>{
+// ✅ TRIER PAR VOTES
+const sortedQueue = [...queue].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+
+  sortedQueue.forEach((item,i)=>{
     const div = document.createElement("div");
     div.className = "item " + (i===0 ? "playing" : "");
     div.draggable = isDJ;
