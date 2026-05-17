@@ -305,6 +305,45 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
   transform: scale(0.95);
 }
 
+.fire {
+  width: 40px;
+  height: 40px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: rgba(255,100,0,0.2);
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition: 0.2s;
+}
+
+.fire:hover {
+  transform: scale(1.2);
+  background: rgba(255,100,0,0.5);
+
+  box-shadow:
+    0 0 10px orange,
+    0 0 20px red;
+}
+
+.fire.active {
+  background: orange;
+  transform: scale(1.2);
+}
+
+.votes {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
 
 .credit {
   margin-top: -18px;
@@ -393,7 +432,7 @@ input, select {
 
   transition: transform 0.2s;
 }
-``
+
 
 .item strong {
   font-size: 20px; /* numéro + titre */
@@ -413,6 +452,23 @@ input, select {
   align-items:center;
 
   gap: 10px; /* ✅ espace propre */
+}
+
+
+.left {
+  display:flex;
+  flex-direction:column;
+}
+
+.right {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.votes {
+  font-size:14px;
+  opacity:0.8;
 }
 
 
@@ -437,7 +493,7 @@ input, select {
 
   cursor:pointer;
 }
-``
+
 
 
 /* ✅ GLOBAL LOCK */
@@ -828,6 +884,30 @@ let isDJ = false;
 
 /* NAV */
 
+function boost(id){
+
+  // ✅ vérifier si déjà voté
+  if(localStorage.getItem("voted_" + id)) return;
+
+  const item = queue.find(q => q.id === id);
+  if(!item) return;
+
+  // ✅ incrémenter
+  item.votes = (item.votes || 0) + 1;
+
+  // ✅ bloquer vote utilisateur
+  localStorage.setItem("voted_" + id, "true");
+
+  // ✅ trier
+  queue.sort((a,b)=> (b.votes || 0) - (a.votes || 0));
+
+  // ✅ update Firebase
+  const updated = {};
+  queue.forEach(q => updated[q.id] = q);
+
+  ref.set(updated);
+}
+
 function goUser(){
   isDJ = false;
 
@@ -931,7 +1011,7 @@ div.onclick = () => {
     resultsDiv.appendChild(div);
   });
 }
-``
+
 
 /* ADD */
 
@@ -942,6 +1022,7 @@ function add(){
 
   const link = songInput.dataset.link || "";
   const cover = songInput.dataset.cover || "";
+  votes: 0   // ✅ IMPORTANT
 
   if(!song) return alert("Entre une musique");
 
@@ -1009,20 +1090,35 @@ function render(){
     const div = document.createElement("div");
     div.className = "item " + (i===0 ? "playing" : "");
     div.draggable = isDJ;
+const alreadyVoted = localStorage.getItem("voted_" + item.id);
 
-    div.innerHTML = `
-      <div class="row">
-        <div>
-          <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
-          <small>${item.name}</small>
-        </div>
-        ${
-          isDJ
-            ? `<button class="delete" onclick="remove('${item.id}')">✕</button>`
-            : ""
-        }
-      </div>
-    `;
+   div.innerHTML = `
+  <div class="row">
+
+    <div class="left">
+      <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
+      <small>${item.name}</small>
+    </div>
+
+    <div class="right">
+
+      <button class="fire ${alreadyVoted ? "active" : ""}"
+        onclick="boost('${item.id}')">
+  🔥
+</button>
+      <span class="votes">${item.votes || 0}</span>
+
+      ${
+        isDJ
+          ? `<button class="delete" onclick="remove('${item.id}')">✕</button>`
+          : ""
+      }
+
+    </div>
+
+  </div>
+`;
+
 
 
     /* DRAG */
@@ -1042,7 +1138,7 @@ function render(){
     list.appendChild(div);
   });
 }
-``
+
 </script>
 
 </body>
