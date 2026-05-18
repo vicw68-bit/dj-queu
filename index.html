@@ -346,6 +346,93 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
   opacity: 0.8;
 }
 
+.play {
+  width: 40px;
+  height: 40px;
+
+  border-radius: 50%;
+  border: none;
+
+  background: rgba(0,240,255,0.2);
+
+  color: white;
+  font-size: 16px;
+
+  cursor: pointer;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  transition: 0.2s;
+}
+
+.play:hover {
+  transform: scale(1.2);
+
+  background: rgba(0,240,255,0.6);
+
+  box-shadow:
+    0 0 10px cyan,
+    0 0 20px cyan;
+}
+
+.play.playing {
+  background: cyan;
+}
+.play {
+  position: relative;
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+}
+
+/* ✅ cercle parfaitement autour */
+.play::after {
+  content: "";
+
+  position: absolute;
+
+  top: -10%;
+  left: -20%;
+
+  width: 40px;   /* ✅ légèrement plus grand que 40px */
+  height: 41px;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 50%;
+
+  border: 3px solid transparent;
+  border-top: 3px solid #ff2d78; /* 🔥 rouge */
+
+  opacity: 0;
+}
+``
+/* ✅ animation */
+.play.playing::after {
+  opacity: 1;
+  animation: spinProgress 30s linear forwards;
+}
+
+
+
+/* ✅ quand ça joue */
+.play.playing::after {
+  opacity: 1;
+  animation: spinProgress 30s linear forwards;
+}
+
+/* animation */
+@keyframes spinProgress {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
 .credit {
   margin-top: -18px;
@@ -960,6 +1047,39 @@ function askCode(){
   }
 }
 
+let currentAudio = null;
+let currentUrl = null;
+let currentButton = null;
+
+function playPreview(url, button) {
+  if(!url) return;
+
+  // pause si même musique
+  if(currentAudio && currentUrl === url){
+    currentAudio.pause();
+    currentAudio = null;
+    currentUrl = null;
+
+    if(currentButton) currentButton.classList.remove("playing");
+
+    return;
+  }
+
+  // stop ancien
+  if(currentAudio){
+    currentAudio.pause();
+    if(currentButton) currentButton.classList.remove("playing");
+  }
+
+  // play
+  currentAudio = new Audio(url);
+  currentAudio.play();
+
+  currentUrl = url;
+  currentButton = button;
+
+  button.classList.add("playing");
+}
 
 
 const songInput = document.getElementById("song");
@@ -1024,6 +1144,7 @@ function displayResults(data){
 
     songInput.dataset.link = track.link;
     songInput.dataset.cover = track.album.cover_medium;
+songInput.dataset.preview = track.preview;
 
     resultsDiv.innerHTML = "";
   };
@@ -1039,7 +1160,7 @@ function add(){
   const song = document.getElementById("song").value.trim();
   const name = document.getElementById("name").value || "Anonyme";
   const platform = document.getElementById("platform").value;
-
+const preview = songInput.dataset.preview || "";
   const link = songInput.dataset.link || "";
   const cover = songInput.dataset.cover || "";
  
@@ -1052,6 +1173,7 @@ ref.push({
   platform,
   link,
   cover,
+preview,
   votes: 0   // ✅
 });
 
@@ -1138,6 +1260,7 @@ function render(){
         </div>
 
         <div class="right">
+<button class="play" onclick="playPreview('${item.preview}', this)">▶️</button>
           <button class="fire ${alreadyVoted ? "active" : ""}"
                   onclick="boost('${item.id}')">🔥</button>
 
@@ -1153,6 +1276,7 @@ function render(){
     `;
 
     list.appendChild(div);
+
 
     /* DRAG */
     if(isDJ){
