@@ -189,8 +189,6 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
 
 }
 
-}
-
 .top {
   margin-bottom: 0;
   gap: 5px; /* ✅ rapproche QUEUE IT et hint */
@@ -413,7 +411,7 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
 
   opacity: 0;
 }
-``
+
 /* ✅ animation */
 .play.playing::after {
   opacity: 1;
@@ -432,6 +430,47 @@ transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
 @keyframes spinProgress {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* ✅ scrollbar globale */
+::-webkit-scrollbar {
+  width: 6px;           /* largeur verticale */
+  height: 6px;          /* largeur horizontale */
+}
+
+/* ✅ fond */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ✅ barre */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00f0ff, #ff2d78);
+  border-radius: 10px;
+
+  box-shadow:
+    0 0 5px #00f0ff,
+    0 0 10px #ff2d78;
+}
+
+/* ✅ hover */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #00f0ff, #ff2d78);
+
+  box-shadow:
+    0 0 10px #00f0ff,
+    0 0 20px #ff2d78;
+}
+
+#roomNameDisplay{
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+
+  margin-bottom:10px;
+
+  text-shadow:
+    0 0 10px rgba(0,240,255,0.8);
 }
 
 .credit {
@@ -555,23 +594,43 @@ input, select {
 }
 
 .row {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  gap: 10px; /* ✅ espace propre */
+  gap: 10px;
+
+  width: 100%;        /* ✅ important */
+  overflow: hidden;   /* ✅ empêche débordement */
+}
+
+
+#list {
+  overflow-x: hidden;  /* ✅ bloque scroll horizontal */
+  overflow-y: auto;    /* ✅ garde scroll vertical */
 }
 
 
 .left {
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
 }
+
+.left strong,
+.left small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* ✅ "..." si trop long */
+}
+
 
 .right {
   display:flex;
   align-items:center;
   gap:8px;
+flex-shrink: 0;
 }
 
 .votes {
@@ -602,13 +661,71 @@ input, select {
   cursor:pointer;
 }
 
+.pad {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
 
+.grid {
+  display:grid;
+  grid-template-columns: repeat(3, 80px);
+  gap:15px;
+}
 
-/* ✅ GLOBAL LOCK */
-html, body {
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
+.grid button {
+  width:80px;
+  height:80px;
+
+  border-radius:50%;
+  border:none;
+
+  font-size:22px;
+  font-weight:bold;
+
+  color:white;
+
+  background: linear-gradient(135deg,#00f0ff,#bf00ff);
+
+  box-shadow:
+    0 0 15px rgba(0,240,255,0.6),
+    0 0 35px rgba(255,0,200,0.4);
+
+  cursor:pointer;
+  transition:0.2s;
+}
+
+/* hover */
+.grid button:hover {
+  transform: scale(1.15);
+}
+
+/* clic */
+.grid button:active {
+  transform: scale(0.9);
+}
+
+/* bouton large */
+.grid .wide {
+  grid-column: span 1;
+}
+
+/* OK bouton spécial */
+.grid .ok {
+  background: linear-gradient(135deg,#00ff88,#00cc66);
+
+  box-shadow:
+    0 0 15px rgba(0,255,150,0.8);
+}
+
+/* affichage code */
+#codeDisplay {
+  font-size:32px;
+  letter-spacing:12px;
+  margin-bottom:30px;
+
+  text-shadow:
+    0 0 10px cyan;
 }
 
 /* ✅ BACKGROUND */
@@ -796,12 +913,22 @@ display: flex;
 
 #results {
   width: 100%;
+
+  max-height: 30vh;
+  overflow-y: auto;
+  overflow-x: hidden;   /* ✅ bloque gauche/droite */
+
+  scroll-behavior: smooth;
 }
+
 
 .result {
   display: flex;
   align-items: center;
   gap: 10px;
+
+  width: 100%;           /* ✅ important */
+  overflow: hidden;      /* ✅ empêche débordement */
 
   background: rgba(0,0,0,0.6);
   margin-top: 6px;
@@ -816,17 +943,26 @@ display: flex;
   transform: scale(1.03);
 }
 
+.result div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis; /* ✅ coupe proprement */
+}
+
+
 .result img {
   width: 40px;
   height: 40px;
   border-radius: 6px;
+flex-shrink: 0;
 }
 
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin:0;
+  font-family:sans-serif;
+  background:#0a0a12;
+  color:#fff;
 }
 
 .feedback {
@@ -916,7 +1052,6 @@ body {
     <p class="hint">Tap to start</p>
   </div>
 
-
   <div class="center-visual">
     <div class="disc"></div>
   </div>
@@ -928,7 +1063,7 @@ body {
   </div>
 
 </div>
- </div>
+ 
 
 <!-- PAGE 2 : CHOIX -->
 <div id="choice" class="background" style="display:none;">
@@ -943,15 +1078,52 @@ body {
 </div>
 
 
-<!-- APP -->
+<!-- PAGE ROOM -->
 
+<div id="roomPage" class="background" style="display:none;">
+
+  <h2 class="who">REJOINDRE UNE SOIRÉE 🎧</h2>
+
+  <div class="buttons">
+    <button class="btn" onclick="openCreate()">Créer</button>
+<button class="btn" onclick="openJoin()">Rejoindre</button>
+  </div>
+
+</div>
+
+
+<div id="djRooms" class="background" style="display:none;">
+  <h2 class="who">ROOMS DJ 🎛️</h2>
+
+  <div id="roomList"></div>
+
+<button class="back" onclick="exitDJ()">⬅ Retour</button>
+</div>
+
+
+<div id="roomForm" class="background" style="display:none;">
+
+  <h2 class="who" id="formTitle">Créer une room</h2>
+
+  <input id="roomNameInput" placeholder="Nom de la soirée 🎧">
+  <input id="roomCodeInput" placeholder="Code à 6 chiffres">
+
+  <button class="send-btn" onclick="submitRoom()">VALIDER ✅</button>
+
+  <button class="back" onclick="goRoomMenu()">⬅ Retour</button>
+
+</div>
+
+<!-- APP -->
 
 <div id="app" class="background" style="display:none;">
 
 
-  <button class="back" onclick="location.reload()">⬅ Retour menu</button>
+ <button onclick="resetApp()">⬅ Retour menu</button>
+
 
   <div id="requestSection">
+<h2 id="roomNameDisplay"></h2>
     <h2>Ajouter une musique</h2>
 
     <input id="song" placeholder="Titre">
@@ -987,13 +1159,102 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-const ref = db.ref("queue");
+
+let ref = null;
+
 
 let queue = [];
-let isDJ = false;
+let isDJ = localStorage.getItem("isDJ") === "true";
+let mode = null;
 
 /* NAV */
 
+function askCode(){
+  const code = prompt("Code DJ ?");
+  
+  if(code === "120916"){
+    localStorage.setItem("isDJ", "true");
+    location.reload();
+  } else {
+    alert("Code incorrect ❌");
+  }
+}
+
+function exitDJ(){
+  localStorage.removeItem("isDJ");
+  location.reload();
+}
+
+function openCreate(){
+  mode = "create";
+
+  document.getElementById("roomPage").style.display = "none";
+  document.getElementById("roomForm").style.display = "flex";
+
+  document.getElementById("formTitle").innerText = "Créer une room";
+  document.getElementById("roomNameInput").style.display = "block";
+}
+
+function openJoin(){
+  mode = "join";
+
+  document.getElementById("roomPage").style.display = "none";
+  document.getElementById("roomForm").style.display = "flex";
+
+  document.getElementById("formTitle").innerText = "Rejoindre une room";
+  document.getElementById("roomNameInput").style.display = "none";
+}
+
+function goRoomMenu(){
+  document.getElementById("roomForm").style.display = "none";
+  document.getElementById("roomPage").style.display = "flex";
+}
+
+function submitRoom(){
+
+  const name = document.getElementById("roomNameInput").value.trim();
+  const codeInput = document.getElementById("roomCodeInput").value.trim();
+
+  if(mode === "create"){
+
+    if(!name){
+      alert("Entre un nom");
+      return;
+    }
+
+    const code = generateCode();
+
+    db.ref("rooms/" + code).set({
+      name: name,
+      queue: {}
+    });
+
+    alert("✅ Room créée ! Code : " + code);
+
+    localStorage.setItem("room", code);
+    location.reload();
+  }
+
+  else if(mode === "join"){
+
+    if(!codeInput){
+      alert("Entre un code");
+      return;
+    }
+
+    db.ref("rooms/" + codeInput).once("value", snap => {
+      if(snap.exists()){
+        localStorage.setItem("room", codeInput);
+localStorage.removeItem("isDJ");
+        location.reload();
+      } else {
+        alert("Room introuvable ❌");
+      }
+    });
+  }
+}
+
+ 
 function boost(id){
 
   // bloque double vote
@@ -1018,33 +1279,164 @@ function boost(id){
   localStorage.setItem("voted_" + id, "true");
 }
 
+function resetApp(){
+  localStorage.removeItem("room");
+  localStorage.removeItem("isDJ");
+  location.reload();
+}
+
 
 function goUser(){
   isDJ = false;
 
   document.getElementById("choice").style.display = "none";
-  document.getElementById("app").style.display = "flex";
-
-  document.getElementById("requestSection").style.display = "block";
+  document.getElementById("roomPage").style.display = "flex";
+localStorage.removeItem("isDJ");
 }
+
+
+function generateCode(){
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+
+
+window.onload = () => {
+
+  const roomStored = localStorage.getItem("room");
+  const isDJStored = localStorage.getItem("isDJ") === "true";
+
+  // reset affichage
+  document.getElementById("home").style.display = "none";
+  document.getElementById("choice").style.display = "none";
+  document.getElementById("app").style.display = "none";
+  document.getElementById("djRooms").style.display = "none";
+
+  // ✅ PRIORITÉ : ROOM (le plus important)
+  if(roomStored){
+
+    document.getElementById("app").style.display = "flex";
+
+    ref = db.ref("rooms/" + roomStored + "/queue");
+
+    ref.on("value", snap => {
+      const data = snap.val();
+      queue = data ? Object.entries(data).map(([id,val]) => ({id,...val})) : [];
+      render();
+});
+
+// 🎧 récupérer nom room
+db.ref("rooms/" + roomStored + "/name").once("value", snap => {
+  const name = snap.val();
+
+  if(name){
+    document.getElementById("roomNameDisplay").innerText = "🎧 " + name;
+  } else {
+    document.getElementById("roomNameDisplay").innerText = "🎧 Room " + roomStored;
+  }
+
+    });
+
+    return;
+  }
+
+  // ✅ DJ seulement si PAS dans une room
+  if(isDJStored){
+    document.getElementById("djRooms").style.display = "flex";
+    loadRooms();
+    return;
+  }
+
+  // ✅ HOME
+  document.getElementById("home").style.display = "flex";
+};
+ 
 
 function goChoice(){
   document.getElementById("home").style.display = "none";
   document.getElementById("choice").style.display = "flex";
+ localStorage.removeItem("isDJ");
 }
 
-function askCode(){
-  const code = prompt("Code DJ ?");
-  if(code === "120916"){
-    isDJ = true;
+function loadRooms(){
 
-    document.getElementById("choice").style.display = "none";
-    document.getElementById("app").style.display = "flex";
-
-    document.getElementById("requestSection").style.display = "none";
-
-    render(); // ✅ IMPORTANT
+  const container = document.getElementById("roomList");
+  if(!container){
+    console.log("❌ container introuvable");
+    return;
   }
+
+  db.ref("rooms").once("value").then(snap => {
+
+    const data = snap.val();
+    console.log("🔥 ROOMS DATA:", data);
+
+    // ✅ appel direct obligatoire
+    showRooms(data);
+
+  }).catch(err => {
+    console.error("❌ Firebase error:", err);
+  });
+
+}
+
+
+
+function showRooms(data){
+
+  const container = document.getElementById("roomList");
+  container.innerHTML = "";
+
+  if(!data){
+    container.innerHTML = "<p>Aucune room</p>";
+    return;
+  }
+
+  Object.keys(data).forEach(code => {
+
+    const roomData = data[code];
+
+    // ✅ on affiche TOUT ce qui est dans rooms
+    // même si c'est vide
+    if(typeof roomData !== "object") return;
+
+    const name = (roomData && roomData.name)
+      ? roomData.name
+      : "Room " + code;
+
+    const div = document.createElement("div");
+    div.className = "item";
+
+    div.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div onclick="selectRoom('${code}')" style="flex:1; cursor:pointer;">
+          <strong>${name}</strong><br>
+          <small>Code : ${code}</small>
+        </div>
+        <button onclick="deleteRoom(event,'${code}')" class="delete">✕</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+
+function selectRoom(code){
+  localStorage.setItem("room", code);
+    localStorage.setItem("isDJ", "true")
+  location.reload();
+}
+
+function deleteRoom(event, code){
+  event.stopPropagation(); // ✅ empêche de rejoindre la room
+
+  if(!confirm("Supprimer cette room ?")) return;
+
+  db.ref("rooms/" + code).remove();
+  
+  // refresh liste
+  loadRooms();
 }
 
 let currentAudio = null;
@@ -1202,11 +1594,6 @@ function remove(id){
 }
 
 /* LIVE */
-ref.on("value", snap => {
-  const data = snap.val();
-  queue = data ? Object.entries(data).map(([id,val]) => ({id,...val})) : [];
-  render();
-});
 
 function showFeedback(text){
   const msg = document.createElement("div");
@@ -1296,7 +1683,88 @@ function render(){
   });
 }
 
-</script>
+let enteredCode = "";
 
+function askCode(){
+  document.getElementById("choice").style.display = "none";
+  document.getElementById("djCodeScreen").style.display = "flex";
+}
+
+function addDigit(d){
+  if(enteredCode.length >= 6) return;
+
+  enteredCode += d;
+  updateDisplay();
+}
+
+function clearCode(){
+  enteredCode = enteredCode.slice(0, -1);
+  updateDisplay();
+}
+
+function updateDisplay(){
+  const display = document.getElementById("codeDisplay");
+
+  display.innerText =
+  enteredCode.split("").map(() => "•").join(" ")
+  + " " +
+  "• ".repeat(6 - enteredCode.length);
+}
+
+function validateCode(){
+  if(enteredCode === "120916"){
+    localStorage.setItem("isDJ", "true");
+    location.reload();
+  } else {
+    alert("Code incorrect ❌");
+    enteredCode = "";
+    updateDisplay();
+  }
+}
+
+function backToChoice(){
+  enteredCode = "";
+
+  document.getElementById("djCodeScreen").style.display = "none";
+  document.getElementById("choice").style.display = "flex";
+}
+
+
+</script>
+<div id="djCodeScreen" class="background" style="display:none;">
+
+  <h2 class="who">ENTER DJ CODE 🔒</h2>
+
+  <div id="codeDisplay" style="font-size:30px; letter-spacing:10px; margin-bottom:20px;">
+    ••••••
+  </div>
+
+  <div class="buttons" style="flex-direction:column; gap:15px;">
+
+    <div class="pad">
+
+  <div class="grid">
+    <button onclick="addDigit(1)">1</button>
+    <button onclick="addDigit(2)">2</button>
+    <button onclick="addDigit(3)">3</button>
+
+    <button onclick="addDigit(4)">4</button>
+    <button onclick="addDigit(5)">5</button>
+    <button onclick="addDigit(6)">6</button>
+
+    <button onclick="addDigit(7)">7</button>
+    <button onclick="addDigit(8)">8</button>
+    <button onclick="addDigit(9)">9</button>
+
+    <button class="wide" onclick="clearCode()">⌫</button>
+    <button onclick="addDigit(0)">0</button>
+    <button class="wide ok" onclick="validateCode()">OK</button>
+  </div>
+
+</div>
+
+  <button class="back" onclick="backToChoice()">⬅ Retour</button>
+
+</div>
 </body>
 </html>
