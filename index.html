@@ -1192,7 +1192,12 @@ function openCreate(){
   document.getElementById("roomForm").style.display = "flex";
 
   document.getElementById("formTitle").innerText = "Créer une room";
+
+  // ✅ ON VEUT LE NOM
   document.getElementById("roomNameInput").style.display = "block";
+
+  // ✅ ON CACHE LE CODE
+  document.getElementById("roomCodeInput").style.display = "none";
 }
 
 function openJoin(){
