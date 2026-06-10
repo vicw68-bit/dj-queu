@@ -1,506 +1,41 @@
-
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0d003a">
 <title>DJ Queue</title>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
-* {
-  box-sizing: border-box;
+:root {
+  --cyan: #6ff4f0;
+  --cyan-bright: #00f0ff;
+  --magenta: #ff2d78;
+  --purple: #bf00ff;
+  --bg-deep: #0a0a12;
+  --surface: rgba(0, 0, 0, 0.55);
+  --surface-border: rgba(255, 255, 255, 0.1);
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+  --shadow-neon: 0 0 20px rgba(0, 240, 255, 0.55), 0 0 40px rgba(255, 0, 200, 0.35);
+  --font: "DM Sans", system-ui, sans-serif;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --header-h: 56px;
 }
 
-/* GLOBAL */
-body {
-  margin:0;
-  font-family:sans-serif;
-  background:#0a0a12;
-  color:#fff;
-}
+*, *::before, *::after { box-sizing: border-box; }
 
-
-/* TOP */
-.top {
-  margin-bottom: 20px;
-
-  display: flex;              /* ✅ important */
-  flex-direction: column;
-  align-items: center;        /* ✅ centre PAR RAPPORT AU TITRE */
-}
-
-/* TITLE (ne change pas) */
-.title {
-  font-size: clamp(40px, 6vw, 70px);
-
-  color: #6ff4f0 !important;
-
-  padding: 12px 30px !important;
-
-  border: 3px solid #6ff4f0 !important; /* ✅ cadre forcé */
-
-  border-radius: 12px !important;
-
-  display: inline-block !important;
-  cursor: pointer;
-
-  text-shadow:
-    0 0 10px rgba(0,240,255,0.9),
-    0 0 20px rgba(0,240,255,0.8) !important;
-
-  box-shadow:
-    0 0 20px rgba(0,240,255,0.8),
-    0 0 40px rgba(255,0,200,0.5) !important;
-
-  transition: all 0.2s ease !important;
-}
-
-
-.title:hover {
-  transform: scale(1.08);
-  box-shadow:
-    0 0 25px rgba(0,240,255,1),
-    0 0 60px rgba(255,0,200,0.5);
-}
-
-/* effet clic */
-.title:active {
-  transform: scale(0.92);
-  box-shadow:
-    0 0 10px rgba(0,240,255,0.6);
-}
-
-
-/* SUBTITLE FIX ✅ */
-.subtitle {
-  margin-top: 10px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 8px 22px;
-
-  background: linear-gradient(135deg,#00f0ff,#bf00ff);
-  color: white;
-
-  border-radius: 50px;
-
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 400;
-
-  font-size: 14px;
-  letter-spacing: 1px;
-
-  text-transform: uppercase;
-
-  box-shadow: 0 0 15px rgba(0,240,255,0.6);
-
-  backdrop-filter: blur(6px);
-
-  line-height: 1;
-}
-
-
-/* CENTER DISC */
-.center-visual {
-  flex:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  position: relative;
-  z-index: 1;
-}
-
-/* 🔥 DISQUE SPIRALE */
-.disc {
-  width:380px;
-  height:380px;
-  border-radius:50%;
-  position: relative;
-
-  /* ✅ spirale + lignes propres */
-  background:
-    repeating-conic-gradient(
-      rgba(255,255,255,0.08) 0deg,
-      transparent 48deg
-    ),
-    repeating-radial-gradient(
-      circle,
-      #111 0px,
-      #111 5px,
-      #222 5px,
-      #222 10px
-    );
-
-  /* ✅ glow DJ */
-  box-shadow:
-    0 0 25px rgba(0,240,255,0.5),
-    0 0 80px rgba(255,0,200,0.4);
-
-  animation: spin 24s linear infinite;
-}
-
-
-/* ✅ CENTRE DU VINYLE */
-.disc::after {
-  content:"";
-
-  width:120px;
-  height:120px;
-
-  border-radius:50%;
-
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-
-  /* ✅ TON IMAGE */
-  background: url("test1.jpg");
-  background-size: cover;
-  background-position: center;
-
-  border: 4px solid #000;
-
-  /* ✅ effet glow */
-  box-shadow:
-    0 0 10px rgba(0,240,255,0.5),
-    0 0 20px rgba(255,0,200,0.4);
-}
-
-
-/* ✅ ANIMATION ROTATION */
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* BOTTOM */
-
-.bottom {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-transform: translateY(-30px); /* ✅ remonte sans agrandir la page */
-
-}
-
-.top {
-  margin-bottom: 0;
-  gap: 5px; /* ✅ rapproche QUEUE IT et hint */
-}
-
-.who {
-  margin-bottom:20px;
-  letter-spacing:2px;
-}
-
-
-
-.buttons {
-  display: flex;               /* ✅ change grid → flex */
-  justify-content: center;     /* ✅ centre le groupe */
-  align-items: center;
-
-  gap: 30px;                   /* ✅ espace propre */
-  
-  width: 100%;
-  max-width: 500px;            /* ✅ bloc centré */
-  margin: 0 auto;              /* ✅ centre global */
-}
-
-
-.btn {
-  background:#d9d6d1;
-
-  border-radius: 20px; /* ✅ au lieu de cercle */
-
-  padding: 22px 0;
-  font-size: 22px;
-
-  border:none;
-  cursor:pointer;
-
-  width:100%;
-  max-width:180px; /* ✅ limite la largeur */
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  transition:0.2s;
-
-  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-}
-
-/* ✅ SURVOL = petit agrandissement */
-.btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-}
-
-/* ✅ CLIC = effet appui */
-.btn:active {
-  transform: scale(0.95);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.4);
-}
-
-.buttons .btn:first-child {
-  box-shadow: 0 0 15px rgba(0,240,255,0.6);
-}
-
-.buttons .btn:first-child:hover {
-  box-shadow: 0 0 30px rgba(0,240,255,1);
-}
-
-.buttons .btn:nth-child(2) {
-  box-shadow: 0 0 15px rgba(255,0,200,0.6);
-}
-
-.buttons .btn:nth-child(2):hover {
-  box-shadow: 0 0 30px rgba(255,0,200,1);
-}
-
-.send-btn {
-  margin-top: 15px;
-
-  width: 100%;
-
-  padding: 18px 0;
-  font-size: 18px;
-  font-weight: bold;
-
-  border: none;
-  border-radius: 50px;
-
-  color: white;
-
-  background: linear-gradient(135deg,#00f0ff,#bf00ff);
-
-  cursor: pointer;
-
-  transition: 0.2s ease;
-
-  /* ✅ glow */
-  box-shadow:
-    0 0 15px rgba(0,240,255,0.6),
-    0 0 40px rgba(255,0,200,0.4);
-}
-
-.send-btn:hover {
-  transform: scale(1.05);
-
-  box-shadow:
-    0 0 25px rgba(0,240,255,1),
-    0 0 60px rgba(255,0,200,0.6);
-}
-
-.send-btn:active {
-  transform: scale(0.95);
-}
-
-.fire {
-  width: 40px;
-  height: 40px;
-
-  border: none;
-  border-radius: 50%;
-
-  background: rgba(255,100,0,0.2);
-
-  cursor: pointer;
-
-  font-size: 18px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  transition: 0.2s;
-}
-
-.fire:hover {
-  transform: scale(1.2);
-  background: rgba(255,100,0,0.5);
-
-  box-shadow:
-    0 0 10px orange,
-    0 0 20px red;
-}
-
-.fire.active {
-  background: orange;
-  transform: scale(1.2);
-}
-
-.votes {
-  font-size: 14px;
-  opacity: 0.8;
-}
-
-.play {
-  width: 40px;
-  height: 40px;
-
-  border-radius: 50%;
-  border: none;
-
-  background: rgba(0,240,255,0.2);
-
-  color: white;
-  font-size: 16px;
-
-  cursor: pointer;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  transition: 0.2s;
-}
-
-.play:hover {
-  transform: scale(1.2);
-
-  background: rgba(0,240,255,0.6);
-
-  box-shadow:
-    0 0 10px cyan,
-    0 0 20px cyan;
-}
-
-.play.playing {
-  background: cyan;
-}
-.play {
-  position: relative;
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-}
-
-/* ✅ cercle parfaitement autour */
-.play::after {
-  content: "";
-
-  position: absolute;
-
-  top: -10%;
-  left: -20%;
-
-  width: 40px;   /* ✅ légèrement plus grand que 40px */
-  height: 41px;
-
-  transform: translate(-50%, -50%);
-
-  border-radius: 50%;
-
-  border: 3px solid transparent;
-  border-top: 3px solid #ff2d78; /* 🔥 rouge */
-
-  opacity: 0;
-}
-
-/* ✅ animation */
-.play.playing::after {
-  opacity: 1;
-  animation: spinProgress 30s linear forwards;
-}
-
-
-
-/* ✅ quand ça joue */
-.play.playing::after {
-  opacity: 1;
-  animation: spinProgress 30s linear forwards;
-}
-
-/* animation */
-@keyframes spinProgress {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* ✅ scrollbar globale */
-::-webkit-scrollbar {
-  width: 6px;           /* largeur verticale */
-  height: 6px;          /* largeur horizontale */
-}
-
-/* ✅ fond */
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-/* ✅ barre */
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #00f0ff, #ff2d78);
-  border-radius: 10px;
-
-  box-shadow:
-    0 0 5px #00f0ff,
-    0 0 10px #ff2d78;
-}
-
-/* ✅ hover */
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #00f0ff, #ff2d78);
-
-  box-shadow:
-    0 0 10px #00f0ff,
-    0 0 20px #ff2d78;
-}
-
-#roomNameDisplay{
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-
-  margin-bottom:10px;
-
-  text-shadow:
-    0 0 10px rgba(0,240,255,0.8);
-}
-
-.credit {
-  margin-top: -18px;
-  font-size: 13px;
-  opacity: 0.6;
-}
-
-.now-playing {
-  margin-bottom: 40px;
-margin-bottom: 25px;
-
-  text-align: center;
-
-  font-size: 16px;
-  line-height: 1.3;
-
-  color: #fff;
-
-  text-shadow:
-    0 0 10px rgba(0,240,255,0.8);
-
-  max-width: 250px;
-}
-
-.center-visual {
-  margin-bottom: 25px;  /* ✅ espace sous le disque */
-}
-
-/* BLOQUE SCROLL GLOBAL */
 html, body {
   height: 100%;
   margin: 0;
@@ -509,647 +44,717 @@ html, body {
   touch-action: manipulation;
 }
 
-/* ✅ SCROLL POUR LES RESULTATS */
-#results {
-  width: 100%;
-
-  max-height: 30vh;
-  overflow-y: auto;
-
-  scroll-behavior: smooth;
+body {
+  font-family: var(--font);
+  background: var(--bg-deep);
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ✅ SCROLL POUR LISTE DJ */
-#list {
-  width: 100%;
-
-  max-height: 40vh;
-  overflow-y: auto;
-
-  padding-right: 5px;
-}
-
-/* ✅ SCROLL MOBILE SMOOTH */
-#list, #results {
-  -webkit-overflow-scrolling: touch;
-}
-
-
-/* APP */
-.container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-
-  display: flex;
+/* ── Pages ── */
+.page {
+  display: none;
   flex-direction: column;
-  gap: 10px;
-}
-
-.back {
-  background:#fff;
-  color:#000;
-  font-weight:bold;
-  border:none;
-  padding:10px;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-input, select {
-  width:100%;
-  padding:10px;
-  margin-top:10px;
-  border-radius:8px;
-  border:none;
-}
-
-.item {
-  background: rgba(0,0,0,0.6);
-
-  padding: 18px; /* ✅ plus grand */
-  margin-top: 12px;
-
-  border-radius: 12px;
-
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255,255,255,0.1);
-
-  font-size: 18px; /* ✅ texte plus grand */
-
-  transition: transform 0.2s;
-}
-
-
-.item strong {
-  font-size: 20px; /* numéro + titre */
-}
-
-.item small {
-  font-size: 14px;
-  opacity: 0.8;
-}
-.item:hover {
-  transform: scale(1.02);  /* ✅ léger zoom */
-}
-
-.row {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  gap: 10px;
-
-  width: 100%;        /* ✅ important */
-  overflow: hidden;   /* ✅ empêche débordement */
-}
-
-
-#list {
-  overflow-x: hidden;  /* ✅ bloque scroll horizontal */
-  overflow-y: auto;    /* ✅ garde scroll vertical */
-}
-
-
-.left {
-  display: flex;
-  flex-direction: column;
-
-  overflow: hidden;
-}
-
-.left strong,
-.left small {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis; /* ✅ "..." si trop long */
-}
-
-
-.right {
-  display:flex;
-  align-items:center;
-  gap:8px;
-flex-shrink: 0;
-}
-
-.votes {
-  font-size:14px;
-  opacity:0.8;
-}
-
-
-.playing {
-  border-left: 4px solid cyan;
-  box-shadow: 0 0 15px rgba(0,240,255,0.6);
-}
-
-
-
-.delete {
-  width: 40px;   /* ✅ plus gros */
-  height: 40px;
-
-  font-size: 18px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border-radius:50%;
-
-  cursor:pointer;
-}
-
-.pad {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.grid {
-  display:grid;
-  grid-template-columns: repeat(3, 80px);
-  gap:15px;
-}
-
-.grid button {
-  width:80px;
-  height:80px;
-
-  border-radius:50%;
-  border:none;
-
-  font-size:22px;
-  font-weight:bold;
-
-  color:white;
-
-  background: linear-gradient(135deg,#00f0ff,#bf00ff);
-
-  box-shadow:
-    0 0 15px rgba(0,240,255,0.6),
-    0 0 35px rgba(255,0,200,0.4);
-
-  cursor:pointer;
-  transition:0.2s;
-}
-
-/* hover */
-.grid button:hover {
-  transform: scale(1.15);
-}
-
-/* clic */
-.grid button:active {
-  transform: scale(0.9);
-}
-
-/* bouton large */
-.grid .wide {
-  grid-column: span 1;
-}
-
-/* OK bouton spécial */
-.grid .ok {
-  background: linear-gradient(135deg,#00ff88,#00cc66);
-
-  box-shadow:
-    0 0 15px rgba(0,255,150,0.8);
-}
-
-/* affichage code */
-#codeDisplay {
-  font-size:32px;
-  letter-spacing:12px;
-  margin-bottom:30px;
-
-  text-shadow:
-    0 0 10px cyan;
-}
-
-/* ✅ BACKGROUND */
-.background {
-  height: 100vh;
-  width: 100%;
-
-margin: 0;
-  overflow: hidden;
-
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,240,255,0.2), transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(255,0,200,0.2), transparent 40%),
-    linear-gradient(180deg, #2c00c7, #0d003a);
-
-  background-size: 200% 200%;
-  background-position: 0% 50%;
-  animation: moveBg 8s ease-in-out infinite;
-
-  display: flex;
-  flex-direction: column;
-
   justify-content: center;
-  align-items: center;
-
-  padding: 15px;
-  box-sizing: border-box;
-
-overflow: hidden; /* ✅ empêche débordement interne */
+  gap: clamp(12px, 3vh, 24px);
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  padding: calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0, 240, 255, 0.18), transparent 42%),
+    radial-gradient(circle at 80% 80%, rgba(255, 0, 200, 0.18), transparent 42%),
+    linear-gradient(180deg, #2c00c7, #0d003a);
+  background-size: 200% 200%;
+  animation: moveBg 10s ease-in-out infinite;
 }
 
-/* ✅ ANIMATION FOND */
+.page.active { display: flex; }
+
+.page--app {
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0;
+}
+
 @keyframes moveBg {
-  0% { background-position: 0% 50%; }
-  25% { background-position: 50% 100%; }
+  0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
-  75% { background-position: 50% 0%; }
-  100% { background-position: 0% 50%; }
 }
 
-/* ✅ HOVER LISTE */
-.delete:hover {
-  background:#ff2d78;
-  color:white;
-}
-
-.item:hover {
-  transform: translateX(6px);
-  transition:0.2s;
-}
-
-/* ✅ MOBILE FIX PERFECT */
-@media screen and (max-width: 768px) {
-
-  body {
-    font-size: 14px;
-  }
-
-  /* ✅ CENTRAGE GLOBAL */
-  .background {
-
-display: flex;
+.shell {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
   flex-direction: column;
-  justify-content: center; /* ✅ beaucoup mieux */
-  gap: 20px; /* ✅ espace maîtrisé */
-    align-items: center;
-    padding: 15px;
-  }
-
-  /* ✅ CONTENU CENTRÉ */
-  .top {
-    text-align: center;
-    width: 100%;
-  }
-
-.top {
-  position: relative;
-  z-index: 2; /* ✅ AU-DESSUS du disque */
+  align-items: center;
+  gap: clamp(10px, 2.5vh, 20px);
 }
 
-  .bottom {
-    width: 100%;
-    max-width: 350px;
-    transform: translateY(-15px);
-  }
+.shell--narrow { max-width: 420px; }
 
-  /* ✅ TITRE */
-  .title {
-  font-size: clamp(40px, 6vw, 70px);
-  color: #6ff4f0;
-
-  padding: 10px 30px;
-
-  border: 3px solid #6ff4f0; /* ✅ cadre */
-
+/* ── Home ── */
+.title {
+  margin: 0;
+  font-size: clamp(2.2rem, 8vw, 4rem);
+  font-weight: 700;
+  color: var(--cyan);
+  padding: 10px 28px;
+  border: 3px solid var(--cyan);
   border-radius: 12px;
-
-  display: inline-block; 
+  display: inline-block;
   cursor: pointer;
-
-  /* ✅ glow texte */
-  text-shadow:
-    0 0 8px rgba(0,240,255,0.9),
-    0 0 20px rgba(0,240,255,0.8);
-
-  /* ✅ glow cadre */
-  box-shadow:
-    0 0 15px rgba(0,240,255,0.7),
-    0 0 40px rgba(255,0,200,0.4);
-
-  transition: all 0.2s ease;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.9), 0 0 20px rgba(0, 240, 255, 0.7);
+  box-shadow: var(--shadow-neon);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
 }
 
 .title:hover {
-  transform: scale(1.1);
-
-  box-shadow:
-    0 0 25px rgba(0,240,255,1),
-    0 0 60px rgba(255,0,200,0.6);
+  transform: scale(1.06);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 1), 0 0 60px rgba(255, 0, 200, 0.5);
 }
 
-/* clic */
-.title:active {
-  transform: scale(0.9);
+.title:active { transform: scale(0.94); }
+
+.hint {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.65;
+  animation: blink 1.4s ease-in-out infinite;
 }
 
-
-  /* ✅ SUBTITLE */
-  .subtitle {
-    font-size: 12px;
-    padding: 6px 15px;
-    margin-top: 8px;
-  }
-
-  /* ✅ DISQUE */
-  .disc {
-    width: 180px;
-    height: 180px;
-  }
-
-  .disc::after {
-    width: 60px;
-    height: 60px;
-  }
-
-  /* ✅ ESPACES */
-  .top {
-    margin-bottom: 10px;
-  }
-
-  /* ✅ BOUTONS */
-  .buttons {
-  display:flex;
-  justify-content:center; /* ✅ centre */
-  gap:40px; /* ✅ espace propre */
+@keyframes blink {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
 }
 
-  .btn {
-    font-size: 14px;
-    padding: 10px 0;
-    width: 100%;
-  }
-
-  /* ✅ TEXTE */
-  .who {
-    font-size: 16px;
-    margin-bottom: 10px;
-  }
+.subtitle {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 22px;
+  background: linear-gradient(135deg, var(--cyan-bright), var(--purple));
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
 }
 
+.credit {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.55;
+}
 
-.container {
+.disc {
+  width: clamp(160px, 42vw, 320px);
+  height: clamp(160px, 42vw, 320px);
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  background:
+    repeating-conic-gradient(rgba(255, 255, 255, 0.08) 0deg, transparent 48deg),
+    repeating-radial-gradient(circle, #111 0 5px, #222 5px 10px);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.45), 0 0 70px rgba(255, 0, 200, 0.35);
+  animation: spin 24s linear infinite;
+}
+
+.disc::after {
+  content: "";
+  width: 32%;
+  height: 32%;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: url("test1.jpg") center/cover no-repeat, linear-gradient(135deg, #333, #111);
+  border: 4px solid #000;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.45);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.now-playing {
+  margin: 0;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  max-width: 280px;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+}
+
+.now-playing strong { display: block; font-size: 1.05rem; }
+.now-playing small { opacity: 0.8; }
+
+/* ── Headings & buttons ── */
+.who {
+  margin: 0 0 8px;
+  font-size: clamp(1.1rem, 4vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+}
+
+.btn-row {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: clamp(16px, 5vw, 32px);
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
 }
 
-.top,
-.bottom {
+.btn {
+  flex: 1;
+  max-width: 180px;
+  min-height: 52px;
+  padding: 14px 20px;
+  font-family: inherit;
+  font-size: clamp(0.95rem, 3.5vw, 1.2rem);
+  font-weight: 700;
+  background: #d9d6d1;
+  color: #111;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:hover { transform: scale(1.05); }
+.btn:active { transform: scale(0.96); }
+
+.btn--cyan { box-shadow: 0 0 15px rgba(0, 240, 255, 0.55); }
+.btn--cyan:hover { box-shadow: 0 0 28px rgba(0, 240, 255, 0.9); }
+.btn--pink { box-shadow: 0 0 15px rgba(255, 0, 200, 0.55); }
+.btn--pink:hover { box-shadow: 0 0 28px rgba(255, 0, 200, 0.9); }
+
+.btn-back {
+  margin-top: 12px;
   width: 100%;
-  max-width: 500px; /* ✅ limite largeur mobile */
-  margin: 0 auto;
+  max-width: 280px;
+  min-height: 44px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  background: #fff;
+  color: #111;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: opacity 0.2s;
 }
 
+.btn-back:hover { opacity: 0.9; }
+
+.send-btn {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 12px;
+  padding: 14px 20px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, var(--cyan-bright), var(--purple));
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.55), 0 0 35px rgba(255, 0, 200, 0.35);
+  transition: transform 0.2s ease;
+}
+
+.send-btn:hover { transform: scale(1.03); }
+.send-btn:active { transform: scale(0.97); }
+
+/* ── Forms ── */
+.form-stack {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.95);
+  color: #111;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+
+.field:focus {
+  box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.5);
+}
+
+.field::placeholder { color: #666; }
+
+#codeDisplay {
+  font-size: clamp(1.6rem, 6vw, 2rem);
+  letter-spacing: 0.35em;
+  margin: 8px 0 20px;
+  text-shadow: 0 0 10px var(--cyan-bright);
+  user-select: none;
+}
+
+.pad { display: flex; justify-content: center; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, min(80px, 22vw));
+  gap: clamp(10px, 3vw, 15px);
+}
+
+.grid button {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 50%;
+  font-family: inherit;
+  font-size: clamp(1rem, 4vw, 1.35rem);
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--cyan-bright), var(--purple));
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.grid button:hover { transform: scale(1.1); }
+.grid button:active { transform: scale(0.92); }
+.grid .ok {
+  background: linear-gradient(135deg, #00ff88, #00cc66);
+  box-shadow: 0 0 15px rgba(0, 255, 150, 0.7);
+}
+
+/* ── App layout ── */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--header-h);
+  padding: calc(8px + var(--safe-top)) 12px 8px;
+  background: rgba(13, 0, 58, 0.92);
+  border-bottom: 1px solid var(--surface-border);
+  backdrop-filter: blur(10px);
+}
+
+.app-header .btn-back {
+  margin: 0;
+  width: auto;
+  max-width: none;
+  min-height: 40px;
+  padding: 8px 14px;
+  flex-shrink: 0;
+}
+
+.room-badge {
+  flex: 1;
+  min-width: 0;
+  font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+}
+
+.app-body {
+  flex: 1;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px 14px calc(14px + var(--safe-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(8px);
+}
+
+.panel-title {
+  margin: 0 0 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
 
 #results {
-  width: 100%;
-
-  max-height: 30vh;
+  max-height: 28vh;
   overflow-y: auto;
-  overflow-x: hidden;   /* ✅ bloque gauche/droite */
-
-  scroll-behavior: smooth;
+  margin-top: 8px;
+  -webkit-overflow-scrolling: touch;
 }
-
 
 .result {
   display: flex;
   align-items: center;
   gap: 10px;
-
-  width: 100%;           /* ✅ important */
-  overflow: hidden;      /* ✅ empêche débordement */
-
-  background: rgba(0,0,0,0.6);
+  width: 100%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.06);
   margin-top: 6px;
   padding: 8px;
-  border-radius: 8px;
-
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: 0.2s;
+  transition: transform 0.15s, background 0.15s;
 }
 
 .result:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.1);
 }
-
-.result div {
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis; /* ✅ coupe proprement */
-}
-
 
 .result img {
   width: 40px;
   height: 40px;
   border-radius: 6px;
-flex-shrink: 0;
+  flex-shrink: 0;
+  object-fit: cover;
 }
 
+.result div {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.9rem;
+}
 
-body {
-  margin:0;
-  font-family:sans-serif;
-  background:#0a0a12;
-  color:#fff;
+#list, #roomList {
+  max-height: none;
+  overflow: visible;
+}
+
+.queue-scroll {
+  max-height: min(42vh, 360px);
+  overflow-y: auto;
+  padding-right: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.item {
+  background: var(--surface);
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--surface-border);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.item:first-child { margin-top: 0; }
+
+.item.playing {
+  border-left: 4px solid var(--cyan-bright);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.45);
+}
+
+.item:hover { transform: translateX(4px); }
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.left strong { font-size: 1rem; }
+.left small { font-size: 0.8rem; opacity: 0.75; }
+
+.left strong,
+.left small {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.icon-btn:hover { transform: scale(1.12); }
+
+.play {
+  position: relative;
+  background: rgba(0, 240, 255, 0.18);
+  color: #fff;
+}
+
+.play:hover { background: rgba(0, 240, 255, 0.5); }
+.play.playing { background: var(--cyan-bright); color: #111; }
+
+.play::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: var(--magenta);
+  opacity: 0;
+}
+
+.play.playing::after {
+  opacity: 1;
+  animation: spinProgress 30s linear forwards;
+}
+
+@keyframes spinProgress { to { transform: rotate(360deg); } }
+
+.fire {
+  background: rgba(255, 100, 0, 0.2);
+}
+
+.fire:hover { background: rgba(255, 100, 0, 0.45); }
+.fire.active { background: orange; }
+
+.delete {
+  background: rgba(255, 45, 120, 0.15);
+  color: #fff;
+}
+
+.delete:hover {
+  background: var(--magenta);
+}
+
+.votes {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  min-width: 1.2em;
+  text-align: center;
+}
+
+.empty-msg {
+  text-align: center;
+  opacity: 0.6;
+  padding: 20px 10px;
+  font-size: 0.95rem;
 }
 
 .feedback {
   position: fixed;
-  bottom: 80px;
+  bottom: calc(24px + var(--safe-bottom));
   left: 50%;
   transform: translateX(-50%);
-
-  background: linear-gradient(135deg,#00f0ff,#bf00ff);
-  color: white;
-
-  padding: 12px 25px;
-  border-radius: 30px;
-
-  font-size: 14px;
-
-  box-shadow:
-    0 0 15px rgba(0,240,255,0.6);
-
-  animation: fadeUp 2s ease;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--cyan-bright), var(--purple));
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: var(--radius-pill);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.55);
+  animation: fadeUp 2s ease forwards;
+  pointer-events: none;
 }
 
 @keyframes fadeUp {
-  0% { opacity: 0; transform: translate(-50%,20px); }
-  50% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%,-10px); }
+  0% { opacity: 0; transform: translate(-50%, 16px); }
+  15%, 70% { opacity: 1; transform: translate(-50%, 0); }
+  100% { opacity: 0; transform: translate(-50%, -8px); }
 }
 
-.hint {
-  margin-top: -25px;
-
-  font-size: 14px;
-  opacity: 0.7;
-
-  animation: blink 1.2s infinite;
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cyan-bright), var(--magenta));
+  border-radius: 10px;
 }
 
-.top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 5px; /* ✅ rapproche titre + hint */
+@media (min-width: 769px) {
+  .page--home .shell { gap: 22px; }
+  .disc { width: 300px; height: 300px; }
+  .app-body { padding: 16px 20px 24px; }
+  .panel { padding: 18px; }
+  .queue-scroll { max-height: 420px; }
 }
 
-.bottom-home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-
-}
-.page {
-  transition: opacity 0.4s ease;
+@media (max-width: 768px) {
+  .btn-row { gap: 14px; }
+  .btn { min-height: 48px; padding: 12px 10px; }
+  .icon-btn { width: 38px; height: 38px; }
 }
 
-.hidden {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
+@media (max-height: 640px) {
+  .page--home { gap: 8px; }
+  .disc { width: 130px; height: 130px; }
+  .title { padding: 8px 20px; }
 }
-
-.visible {
-  opacity: 1;
-  position: relative;
-}
-
-@keyframes blink {
-  0% { opacity: 0.4; }
-  50% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-  margin-top: 10px;
-
-
 </style>
-
 </head>
 
 <body>
 
 <!-- HOME -->
-<div id="home" class="background">
-
-  <div class="top">
-    <h1 class="title" onclick="goChoice()">QUEUE IT</h1>
-    <p class="hint">Tap to start</p>
+<section id="home" class="page page--home active">
+  <div class="shell">
+    <div style="text-align:center">
+      <h1 class="title" onclick="goChoice()">QUEUE IT</h1>
+      <p class="hint">Tap to start</p>
+    </div>
+    <div class="disc" aria-hidden="true"></div>
+    <p id="nowPlaying" class="now-playing"></p>
+    <div style="text-align:center">
+      <p class="subtitle">DROP YOUR TRACK 🎧</p>
+      <p class="credit">Made by : vico</p>
+    </div>
   </div>
+</section>
 
-  <div class="center-visual">
-    <div class="disc"></div>
+<!-- CHOIX -->
+<section id="choice" class="page">
+  <div class="shell shell--narrow">
+    <h2 class="who">WHO ARE YOU ?</h2>
+    <div class="btn-row">
+      <button class="btn btn--cyan" type="button" onclick="openDjCode()">DJ</button>
+      <button class="btn btn--pink" type="button" onclick="goUser()">ASKER</button>
+    </div>
   </div>
-<div id="nowPlaying" class="now-playing"></div>
+</section>
 
-  <div class="bottom-home">
-    <p class="subtitle">DROP YOUR TRACK 🎧</p>
-    <div class="credit">Made by : vico</div>
+<!-- CODE DJ -->
+<section id="djCodeScreen" class="page">
+  <div class="shell shell--narrow">
+    <h2 class="who">ENTER DJ CODE 🔒</h2>
+    <div id="codeDisplay">• • • • • •</div>
+    <div class="pad">
+      <div class="grid">
+        <button type="button" onclick="addDigit(1)">1</button>
+        <button type="button" onclick="addDigit(2)">2</button>
+        <button type="button" onclick="addDigit(3)">3</button>
+        <button type="button" onclick="addDigit(4)">4</button>
+        <button type="button" onclick="addDigit(5)">5</button>
+        <button type="button" onclick="addDigit(6)">6</button>
+        <button type="button" onclick="addDigit(7)">7</button>
+        <button type="button" onclick="addDigit(8)">8</button>
+        <button type="button" onclick="addDigit(9)">9</button>
+        <button type="button" onclick="clearCode()">⌫</button>
+        <button type="button" onclick="addDigit(0)">0</button>
+        <button type="button" class="ok" onclick="validateCode()">OK</button>
+      </div>
+    </div>
+    <button class="btn-back" type="button" onclick="backToChoice()">⬅ Retour</button>
   </div>
+</section>
 
-</div>
- 
-
-<!-- PAGE 2 : CHOIX -->
-<div id="choice" class="background" style="display:none;">
-
-  <h2 class="who">WHO ARE YOU ?</h2>
-
-  <div class="buttons">
-    <button class="btn" onclick="askCode()">DJ</button>
-    <button class="btn" onclick="goUser()">ASKER</button>
+<!-- ROOM MENU -->
+<section id="roomPage" class="page">
+  <div class="shell shell--narrow">
+    <h2 class="who">REJOINDRE UNE SOIRÉE 🎧</h2>
+    <div class="btn-row">
+      <button class="btn btn--cyan" type="button" onclick="openCreate()">Créer</button>
+      <button class="btn btn--pink" type="button" onclick="openJoin()">Rejoindre</button>
+    </div>
   </div>
+</section>
 
-</div>
-
-
-<!-- PAGE ROOM -->
-
-<div id="roomPage" class="background" style="display:none;">
-
-  <h2 class="who">REJOINDRE UNE SOIRÉE 🎧</h2>
-
-  <div class="buttons">
-    <button class="btn" onclick="openCreate()">Créer</button>
-<button class="btn" onclick="openJoin()">Rejoindre</button>
+<!-- ROOM FORM -->
+<section id="roomForm" class="page">
+  <div class="shell shell--narrow">
+    <h2 class="who" id="formTitle">Créer une room</h2>
+    <div class="form-stack">
+      <input id="roomNameInput" class="field" placeholder="Nom de la soirée 🎧">
+      <input id="roomCodeInput" class="field" placeholder="Code à 6 chiffres" inputmode="numeric" maxlength="6">
+      <button class="send-btn" type="button" onclick="submitRoom()">VALIDER ✅</button>
+    </div>
+    <button class="btn-back" type="button" onclick="goRoomMenu()">⬅ Retour</button>
   </div>
+</section>
 
-</div>
-
-
-<div id="djRooms" class="background" style="display:none;">
-  <h2 class="who">ROOMS DJ 🎛️</h2>
-
-  <div id="roomList"></div>
-
-<button class="back" onclick="exitDJ()">⬅ Retour</button>
-</div>
-
-
-<div id="roomForm" class="background" style="display:none;">
-
-  <h2 class="who" id="formTitle">Créer une room</h2>
-
-  <input id="roomNameInput" placeholder="Nom de la soirée 🎧">
-  <input id="roomCodeInput" placeholder="Code à 6 chiffres">
-
-  <button class="send-btn" onclick="submitRoom()">VALIDER ✅</button>
-
-  <button class="back" onclick="goRoomMenu()">⬅ Retour</button>
-
-</div>
+<!-- DJ ROOMS -->
+<section id="djRooms" class="page">
+  <div class="shell">
+    <h2 class="who">ROOMS DJ 🎛️</h2>
+    <div id="roomList" style="width:100%"></div>
+    <button class="btn-back" type="button" onclick="exitDJ()">⬅ Retour</button>
+  </div>
+</section>
 
 <!-- APP -->
+<section id="app" class="page page--app">
+  <header class="app-header">
+    <button class="btn-back" type="button" onclick="resetApp()">⬅ Menu</button>
+    <div id="roomNameDisplay" class="room-badge"></div>
+  </header>
 
-<div id="app" class="background" style="display:none;">
+  <div class="app-body">
+    <div id="requestSection" class="panel">
+      <h2 class="panel-title">Ajouter une musique</h2>
+      <div class="form-stack">
+        <input id="song" class="field" placeholder="Titre" autocomplete="off">
+        <input id="name" class="field" placeholder="Artiste" autocomplete="off">
+        <div id="results"></div>
+        <select id="platform" class="field">
+          <option value="">Plateforme</option>
+          <option>Spotify</option>
+          <option>YouTube</option>
+          <option>Deezer</option>
+          <option>Apple Music</option>
+          <option>SoundCloud</option>
+        </select>
+        <button class="send-btn" type="button" onclick="add()">SEND 🎧</button>
+      </div>
+    </div>
 
-
- <button onclick="resetApp()">⬅ Retour menu</button>
-
-
-  <div id="requestSection">
-<h2 id="roomNameDisplay"></h2>
-    <h2>Ajouter une musique</h2>
-
-    <input id="song" placeholder="Titre">
-    <input id="name" placeholder="Artiste">
-<div id="results"></div>
-
-    <select id="platform">
-      <option value="">Plateforme</option>
-      <option>Spotify</option>
-      <option>YouTube</option>
-      <option>Deezer</option>
-      <option>Apple Music</option>
-      <option>SoundCloud</option>
-    </select>
-
-    <button class="send-btn" onclick="add()">SEND 🎧</button>
+    <div class="panel">
+      <h2 class="panel-title">File d'attente</h2>
+      <div class="queue-scroll">
+        <div id="list"></div>
+      </div>
+    </div>
   </div>
-
-  <h2>File d'attente</h2>
-  <div id="list"></div>
-
-</div>
+</section>
 
 <script>
-
-/* FIREBASE */
+/* FIREBASE — ne pas modifier */
 const firebaseConfig = {
   apiKey: "AIzaSyAdyyVW-ZTn8O5RjGuq8JZeirY_kOlGxoQ",
   authDomain: "dj-queu.firebaseapp.com",
@@ -1160,564 +765,88 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
+const PAGES = ["home", "choice", "djCodeScreen", "roomPage", "roomForm", "djRooms", "app"];
+const DJ_CODE = "120916";
+
 let ref = null;
-
-
 let queue = [];
 let isDJ = localStorage.getItem("isDJ") === "true";
 let mode = null;
-
-/* NAV */
-
-function askCode(){
-  const code = prompt("Code DJ ?");
-  
-  if(code === "120916"){
-    localStorage.setItem("isDJ", "true");
-    location.reload();
-  } else {
-    alert("Code incorrect ❌");
-  }
-}
-
-function exitDJ(){
-  localStorage.removeItem("isDJ");
-  location.reload();
-}
-
-function openCreate(){
-  mode = "create";
-
-  document.getElementById("roomPage").style.display = "none";
-  document.getElementById("roomForm").style.display = "flex";
-
-  document.getElementById("formTitle").innerText = "Créer une room";
-
-  // ✅ ON VEUT LE NOM
-  document.getElementById("roomNameInput").style.display = "block";
-
-  // ✅ ON CACHE LE CODE
-  document.getElementById("roomCodeInput").style.display = "none";
-}
-
-function openJoin(){
-  mode = "join";
-
-  document.getElementById("roomPage").style.display = "none";
-  document.getElementById("roomForm").style.display = "flex";
-
-  document.getElementById("formTitle").innerText = "Rejoindre une room";
-  document.getElementById("roomNameInput").style.display = "none";
-}
-
-function goRoomMenu(){
-  document.getElementById("roomForm").style.display = "none";
-  document.getElementById("roomPage").style.display = "flex";
-}
-
-function submitRoom(){
-
-  const name = document.getElementById("roomNameInput").value.trim();
-  const codeInput = document.getElementById("roomCodeInput").value.trim();
-
-  if(mode === "create"){
-
-    if(!name){
-      alert("Entre un nom");
-      return;
-    }
-
-    const code = generateCode();
-
-    db.ref("rooms/" + code).set({
-      name: name,
-      queue: {}
-    });
-
-    alert("✅ Room créée ! Code : " + code);
-
-    localStorage.setItem("room", code);
-    location.reload();
-  }
-
-  else if(mode === "join"){
-
-    if(!codeInput){
-      alert("Entre un code");
-      return;
-    }
-
-    db.ref("rooms/" + codeInput).once("value", snap => {
-      if(snap.exists()){
-        localStorage.setItem("room", codeInput);
-localStorage.removeItem("isDJ");
-        location.reload();
-      } else {
-        alert("Room introuvable ❌");
-      }
-    });
-  }
-}
-
- 
-function boost(id){
-
-  // bloque double vote
-  if(localStorage.getItem("voted_" + id)) return;
-
-  const itemRef = ref.child(id);
-
-  itemRef.once("value", snap => {
-    const data = snap.val();
-
-    if(!data) return;
-
-    const newVotes = (data.votes || 0) + 1;
-
-    // ✅ update seulement les votes
-    itemRef.update({
-      votes: newVotes
-    });
-  });
-
-  // ✅ bloquer vote utilisateur
-  localStorage.setItem("voted_" + id, "true");
-}
-
-function resetApp(){
-  localStorage.removeItem("room");
-  localStorage.removeItem("isDJ");
-  location.reload();
-}
-
-
-function goUser(){
-  isDJ = false;
-
-  document.getElementById("choice").style.display = "none";
-  document.getElementById("roomPage").style.display = "flex";
-localStorage.removeItem("isDJ");
-}
-
-
-function generateCode(){
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-
-
-window.onload = () => {
-
-  const roomStored = localStorage.getItem("room");
-  const isDJStored = localStorage.getItem("isDJ") === "true";
-
-  // reset affichage
-  document.getElementById("home").style.display = "none";
-  document.getElementById("choice").style.display = "none";
-  document.getElementById("app").style.display = "none";
-  document.getElementById("djRooms").style.display = "none";
-
-  // ✅ PRIORITÉ : ROOM (le plus important)
-  if(roomStored){
-
-    document.getElementById("app").style.display = "flex";
-
-    ref = db.ref("rooms/" + roomStored + "/queue");
-
-    ref.on("value", snap => {
-      const data = snap.val();
-      queue = data ? Object.entries(data).map(([id,val]) => ({id,...val})) : [];
-      render();
-});
-
-// 🎧 récupérer nom room
-db.ref("rooms/" + roomStored + "/name").once("value", snap => {
-  const name = snap.val();
-
-  if(name){
-    document.getElementById("roomNameDisplay").innerText = "🎧 " + name;
-  } else {
-    document.getElementById("roomNameDisplay").innerText = "🎧 Room " + roomStored;
-  }
-
-    });
-
-    return;
-  }
-
-  // ✅ DJ seulement si PAS dans une room
-  if(isDJStored){
-    document.getElementById("djRooms").style.display = "flex";
-    loadRooms();
-    return;
-  }
-
-  // ✅ HOME
-  document.getElementById("home").style.display = "flex";
-};
- 
-
-function goChoice(){
-  document.getElementById("home").style.display = "none";
-  document.getElementById("choice").style.display = "flex";
- localStorage.removeItem("isDJ");
-}
-
-function loadRooms(){
-
-  const container = document.getElementById("roomList");
-  if(!container){
-    console.log("❌ container introuvable");
-    return;
-  }
-
-  db.ref("rooms").once("value").then(snap => {
-
-    const data = snap.val();
-    console.log("🔥 ROOMS DATA:", data);
-
-    // ✅ appel direct obligatoire
-    showRooms(data);
-
-  }).catch(err => {
-    console.error("❌ Firebase error:", err);
-  });
-
-}
-
-
-
-function showRooms(data){
-
-  const container = document.getElementById("roomList");
-  container.innerHTML = "";
-
-  if(!data){
-    container.innerHTML = "<p>Aucune room</p>";
-    return;
-  }
-
-  Object.keys(data).forEach(code => {
-
-    const roomData = data[code];
-
-    // ✅ on affiche TOUT ce qui est dans rooms
-    // même si c'est vide
-    if(typeof roomData !== "object") return;
-
-    const name = (roomData && roomData.name)
-      ? roomData.name
-      : "Room " + code;
-
-    const div = document.createElement("div");
-    div.className = "item";
-
-    div.innerHTML = `
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div onclick="selectRoom('${code}')" style="flex:1; cursor:pointer;">
-          <strong>${name}</strong><br>
-          <small>Code : ${code}</small>
-        </div>
-        <button onclick="deleteRoom(event,'${code}')" class="delete">✕</button>
-      </div>
-    `;
-
-    container.appendChild(div);
-  });
-}
-
-
-function selectRoom(code){
-  localStorage.setItem("room", code);
-    localStorage.setItem("isDJ", "true")
-  location.reload();
-}
-
-function deleteRoom(event, code){
-  event.stopPropagation(); // ✅ empêche de rejoindre la room
-
-  if(!confirm("Supprimer cette room ?")) return;
-
-  db.ref("rooms/" + code).remove();
-  
-  // refresh liste
-  loadRooms();
-}
-
+let enteredCode = "";
+let draggedIndex = null;
 let currentAudio = null;
 let currentUrl = null;
 let currentButton = null;
-
-function playPreview(url, button) {
-  if(!url) return;
-
-  // pause si même musique
-  if(currentAudio && currentUrl === url){
-    currentAudio.pause();
-    currentAudio = null;
-    currentUrl = null;
-
-    if(currentButton) currentButton.classList.remove("playing");
-
-    return;
-  }
-
-  // stop ancien
-  if(currentAudio){
-    currentAudio.pause();
-    if(currentButton) currentButton.classList.remove("playing");
-  }
-
-  // play
-  currentAudio = new Audio(url);
-  currentAudio.play();
-
-  currentUrl = url;
-  currentButton = button;
-
-  button.classList.add("playing");
-}
-
+let searchTimeout = null;
 
 const songInput = document.getElementById("song");
 const artistInput = document.getElementById("name");
 const resultsDiv = document.getElementById("results");
 
-let timeout = null;
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
-/* ✅ écouter les deux champs */
-[songInput, artistInput].forEach(input => {
-  input.addEventListener("input", () => {
-    clearTimeout(timeout);
-
-    const song = songInput.value.trim();
-    const artist = artistInput.value.trim();
-
-    const query = (song + " " + artist).trim();
-
-    if(query.length < 2){
-      resultsDiv.innerHTML = "";
-      return;
-    }
-
-    timeout = setTimeout(() => {
-      searchDeezer(query);
-    }, 300);
+function showPage(id) {
+  PAGES.forEach(pageId => {
+    document.getElementById(pageId).classList.toggle("active", pageId === id);
   });
-});
-
-/* ✅ JSONP */
-function searchDeezer(query){
-
-  const script = document.createElement("script");
-
-  script.src = "https://api.deezer.com/search?q=" 
-    + encodeURIComponent(query) 
-    + "&output=jsonp&callback=displayResults";
-
-  document.body.appendChild(script);
 }
 
-/* ✅ CALLBACK */
-function displayResults(data){
-
-  resultsDiv.innerHTML = "";
-
-  if(!data.data) return;
-
-  data.data.slice(0,5).forEach(track => {
-
-  const div = document.createElement("div");
-  div.className = "result"; // ✅ simple
-
-  div.innerHTML = `
-    <img src="${track.album.cover_small}">
-    <div>${track.artist.name} - ${track.title}</div>
-  `;
-
-  div.onclick = () => {
-    songInput.value = track.title;
-    artistInput.value = track.artist.name;
-
-    songInput.dataset.link = track.link;
-    songInput.dataset.cover = track.album.cover_medium;
-songInput.dataset.preview = track.preview;
-
-    resultsDiv.innerHTML = "";
-  };
-
-  resultsDiv.appendChild(div);
-});
+function generateCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-
-/* ADD */
-
-function add(){
-  const song = document.getElementById("song").value.trim();
-  const name = document.getElementById("name").value || "Anonyme";
-  const platform = document.getElementById("platform").value;
-const preview = songInput.dataset.preview || "";
-  const link = songInput.dataset.link || "";
-  const cover = songInput.dataset.cover || "";
- 
-
-  if(!song) return alert("Entre une musique");
-
-ref.push({
-  song,
-  name,
-  platform,
-  link,
-  cover,
-preview,
-  votes: 0   // ✅
-});
-
-  /* reset */
-  document.getElementById("song").value = "";
-  document.getElementById("name").value = "";
-
-  delete songInput.dataset.link;
-  delete songInput.dataset.cover;
-
-  /* ✅ FEEDBACK */
-  showFeedback("Track added ✅");
-
-document.addEventListener("click", (e) => {
-  if(!e.target.closest("#song") && !e.target.closest("#results")){
-    resultsDiv.innerHTML = "";
-  }
-});
-}
-
-
-/* REMOVE */
-function remove(id){
-  if(!isDJ) return;
-  ref.child(id).remove();
-}
-
-/* LIVE */
-
-function showFeedback(text){
+function showFeedback(text) {
   const msg = document.createElement("div");
   msg.className = "feedback";
-  msg.innerText = text;
-
+  msg.textContent = text;
   document.body.appendChild(msg);
-
-  setTimeout(()=>{
-    msg.remove();
-  }, 2000);
+  setTimeout(() => msg.remove(), 2000);
 }
 
-/* DRAG */
-let draggedIndex = null;
-
-
-
-function render(){
-  const list = document.getElementById("list");
-  list.innerHTML = "";
-
-  const sortedQueue = [...queue].sort((a, b) => (b.votes || 0) - (a.votes || 0));
-
-  const nowPlayingDiv = document.getElementById("nowPlaying");
-
-  if(sortedQueue.length > 0){
-    const top = sortedQueue[0];
-
-    nowPlayingDiv.innerHTML = `
-      <strong>▶ ${top.song}</strong><br>
-      <small>${top.name}</small>
-    `;
-  } else {
-    nowPlayingDiv.innerHTML = "";
-  }
-
-  sortedQueue.forEach((item,i)=>{
-    const div = document.createElement("div");
-
-    div.className = "item " + (i===0 ? "playing" : "");
-    div.draggable = isDJ;
-
-    const alreadyVoted = localStorage.getItem("voted_" + item.id);
-
-    div.innerHTML = `
-      <div class="row">
-        <div class="left">
-          <strong>${i===0 ? "▶" : i+1}</strong> ${item.song}<br>
-          <small>${item.name}</small>
-        </div>
-
-        <div class="right">
-<button class="play" onclick="playPreview('${item.preview}', this)">▶️</button>
-          <button class="fire ${alreadyVoted ? "active" : ""}"
-                  onclick="boost('${item.id}')">🔥</button>
-
-          <span class="votes">${item.votes || 0}</span>
-
-          ${
-            isDJ
-              ? `<button class="delete" onclick="remove('${item.id}')">✕</button>`
-              : ""
-          }
-        </div>
-      </div>
-    `;
-
-    list.appendChild(div);
-
-
-    /* DRAG */
-    if(isDJ){
-      div.addEventListener("dragstart", () => draggedIndex = i);
-      div.addEventListener("dragover", e => e.preventDefault());
-      div.addEventListener("drop", ()=>{
-        const moved = queue.splice(draggedIndex,1)[0];
-        queue.splice(i,0,moved);
-
-        const updated = {};
-        queue.forEach(q => updated[q.id] = q);
-        ref.set(updated);
-      });
-    }
-
-    list.appendChild(div);
-  });
+/* Navigation */
+function goChoice() {
+  localStorage.removeItem("isDJ");
+  showPage("choice");
 }
 
-let enteredCode = "";
-
-function askCode(){
-  document.getElementById("choice").style.display = "none";
-  document.getElementById("djCodeScreen").style.display = "flex";
+function openDjCode() {
+  enteredCode = "";
+  updateDisplay();
+  showPage("djCodeScreen");
 }
 
-function addDigit(d){
-  if(enteredCode.length >= 6) return;
+function backToChoice() {
+  enteredCode = "";
+  showPage("choice");
+}
 
-  enteredCode += d;
+function addDigit(d) {
+  if (enteredCode.length >= 6) return;
+  enteredCode += String(d);
   updateDisplay();
 }
 
-function clearCode(){
+function clearCode() {
   enteredCode = enteredCode.slice(0, -1);
   updateDisplay();
 }
 
-function updateDisplay(){
-  const display = document.getElementById("codeDisplay");
-
-  display.innerText =
-  enteredCode.split("").map(() => "•").join(" ")
-  + " " +
-  "• ".repeat(6 - enteredCode.length);
+function updateDisplay() {
+  const dots = enteredCode.split("").map(() => "•").join(" ");
+  const remaining = "• ".repeat(6 - enteredCode.length).trim();
+  document.getElementById("codeDisplay").textContent =
+    [dots, remaining].filter(Boolean).join(" ") || "• • • • • •";
 }
 
-function validateCode(){
-  if(enteredCode === "120916"){
+function validateCode() {
+  if (enteredCode === DJ_CODE) {
     localStorage.setItem("isDJ", "true");
     location.reload();
   } else {
@@ -1727,49 +856,358 @@ function validateCode(){
   }
 }
 
-function backToChoice(){
-  enteredCode = "";
-
-  document.getElementById("djCodeScreen").style.display = "none";
-  document.getElementById("choice").style.display = "flex";
+function exitDJ() {
+  localStorage.removeItem("isDJ");
+  location.reload();
 }
 
+function goUser() {
+  isDJ = false;
+  localStorage.removeItem("isDJ");
+  showPage("roomPage");
+}
 
+function openCreate() {
+  mode = "create";
+  document.getElementById("formTitle").textContent = "Créer une room";
+  document.getElementById("roomNameInput").style.display = "";
+  document.getElementById("roomCodeInput").style.display = "none";
+  document.getElementById("roomNameInput").value = "";
+  showPage("roomForm");
+}
+
+function openJoin() {
+  mode = "join";
+  document.getElementById("formTitle").textContent = "Rejoindre une room";
+  document.getElementById("roomNameInput").style.display = "none";
+  document.getElementById("roomCodeInput").style.display = "";
+  document.getElementById("roomCodeInput").value = "";
+  showPage("roomForm");
+}
+
+function goRoomMenu() {
+  showPage("roomPage");
+}
+
+function submitRoom() {
+  const name = document.getElementById("roomNameInput").value.trim();
+  const codeInput = document.getElementById("roomCodeInput").value.trim();
+
+  if (mode === "create") {
+    if (!name) return alert("Entre un nom");
+    const code = generateCode();
+    db.ref("rooms/" + code).set({ name, queue: {} });
+    alert("✅ Room créée ! Code : " + code);
+    localStorage.setItem("room", code);
+    location.reload();
+    return;
+  }
+
+  if (mode === "join") {
+    if (!codeInput) return alert("Entre un code");
+    db.ref("rooms/" + codeInput).once("value", snap => {
+      if (snap.exists()) {
+        localStorage.setItem("room", codeInput);
+        localStorage.removeItem("isDJ");
+        location.reload();
+      } else {
+        alert("Room introuvable ❌");
+      }
+    });
+  }
+}
+
+function resetApp() {
+  localStorage.removeItem("room");
+  localStorage.removeItem("isDJ");
+  location.reload();
+}
+
+/* Rooms DJ */
+function loadRooms() {
+  db.ref("rooms").once("value")
+    .then(snap => showRooms(snap.val()))
+    .catch(err => console.error("Firebase error:", err));
+}
+
+function showRooms(data) {
+  const container = document.getElementById("roomList");
+  container.innerHTML = "";
+
+  if (!data) {
+    container.innerHTML = '<p class="empty-msg">Aucune room</p>';
+    return;
+  }
+
+  Object.keys(data).forEach(code => {
+    const roomData = data[code];
+    if (typeof roomData !== "object") return;
+
+    const name = roomData.name || ("Room " + code);
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div class="row">
+        <div class="left" style="cursor:pointer;flex:1" data-action="select" data-code="${escapeHtml(code)}">
+          <strong>${escapeHtml(name)}</strong>
+          <small>Code : ${escapeHtml(code)}</small>
+        </div>
+        <div class="right">
+          <button class="icon-btn delete" type="button" data-action="delete" data-code="${escapeHtml(code)}" aria-label="Supprimer">✕</button>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+
+  container.querySelectorAll("[data-action='select']").forEach(el => {
+    el.addEventListener("click", () => selectRoom(el.dataset.code));
+  });
+  container.querySelectorAll("[data-action='delete']").forEach(el => {
+    el.addEventListener("click", e => deleteRoom(e, el.dataset.code));
+  });
+}
+
+function selectRoom(code) {
+  localStorage.setItem("room", code);
+  localStorage.setItem("isDJ", "true");
+  location.reload();
+}
+
+function deleteRoom(event, code) {
+  event.stopPropagation();
+  if (!confirm("Supprimer cette room ?")) return;
+  db.ref("rooms/" + code).remove().then(loadRooms);
+}
+
+/* Queue */
+function boost(id) {
+  if (localStorage.getItem("voted_" + id)) return;
+
+  const itemRef = ref.child(id);
+  itemRef.once("value", snap => {
+    const data = snap.val();
+    if (!data) return;
+    itemRef.update({ votes: (data.votes || 0) + 1 });
+  });
+
+  localStorage.setItem("voted_" + id, "true");
+}
+
+function remove(id) {
+  if (!isDJ) return;
+  ref.child(id).remove();
+}
+
+function playPreview(url, button) {
+  if (!url) return;
+
+  if (currentAudio && currentUrl === url) {
+    currentAudio.pause();
+    currentAudio = null;
+    currentUrl = null;
+    if (currentButton) currentButton.classList.remove("playing");
+    return;
+  }
+
+  if (currentAudio) {
+    currentAudio.pause();
+    if (currentButton) currentButton.classList.remove("playing");
+  }
+
+  currentAudio = new Audio(url);
+  currentAudio.play().catch(() => showFeedback("Preview indisponible"));
+  currentUrl = url;
+  currentButton = button;
+  button.classList.add("playing");
+
+  currentAudio.onended = () => {
+    button.classList.remove("playing");
+    currentAudio = null;
+    currentUrl = null;
+    currentButton = null;
+  };
+}
+
+function add() {
+  const song = songInput.value.trim();
+  const artist = artistInput.value.trim() || "Anonyme";
+  const platform = document.getElementById("platform").value;
+  const preview = songInput.dataset.preview || "";
+  const link = songInput.dataset.link || "";
+  const cover = songInput.dataset.cover || "";
+
+  if (!song) return alert("Entre une musique");
+
+  ref.push({ song, name: artist, platform, link, cover, preview, votes: 0 });
+
+  songInput.value = "";
+  artistInput.value = "";
+  document.getElementById("platform").value = "";
+  delete songInput.dataset.link;
+  delete songInput.dataset.cover;
+  delete songInput.dataset.preview;
+  resultsDiv.innerHTML = "";
+
+  showFeedback("Track added ✅");
+}
+
+/* Deezer search */
+[songInput, artistInput].forEach(input => {
+  input.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    const query = (songInput.value.trim() + " " + artistInput.value.trim()).trim();
+    if (query.length < 2) {
+      resultsDiv.innerHTML = "";
+      return;
+    }
+    searchTimeout = setTimeout(() => searchDeezer(query), 300);
+  });
+});
+
+document.addEventListener("click", e => {
+  if (!e.target.closest("#song") && !e.target.closest("#name") && !e.target.closest("#results")) {
+    resultsDiv.innerHTML = "";
+  }
+});
+
+function searchDeezer(query) {
+  const script = document.createElement("script");
+  script.src = "https://api.deezer.com/search?q=" + encodeURIComponent(query) + "&output=jsonp&callback=displayResults";
+  script.onerror = () => { resultsDiv.innerHTML = ""; };
+  document.body.appendChild(script);
+  script.remove();
+}
+
+function displayResults(data) {
+  resultsDiv.innerHTML = "";
+  if (!data || !data.data) return;
+
+  data.data.slice(0, 5).forEach(track => {
+    const div = document.createElement("div");
+    div.className = "result";
+    div.innerHTML = `
+      <img src="${escapeHtml(track.album.cover_small)}" alt="" loading="lazy">
+      <div>${escapeHtml(track.artist.name)} - ${escapeHtml(track.title)}</div>`;
+
+    div.addEventListener("click", () => {
+      songInput.value = track.title;
+      artistInput.value = track.artist.name;
+      songInput.dataset.link = track.link;
+      songInput.dataset.cover = track.album.cover_medium;
+      songInput.dataset.preview = track.preview || "";
+      resultsDiv.innerHTML = "";
+    });
+
+    resultsDiv.appendChild(div);
+  });
+}
+
+function updateNowPlaying(sortedQueue) {
+  const el = document.getElementById("nowPlaying");
+  if (!el) return;
+
+  if (sortedQueue.length > 0) {
+    const top = sortedQueue[0];
+    el.innerHTML = `<strong>▶ ${escapeHtml(top.song)}</strong><small>${escapeHtml(top.name)}</small>`;
+  } else {
+    el.innerHTML = "";
+  }
+}
+
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  const sortedQueue = [...queue].sort((a, b) => (b.votes || 0) - (a.votes || 0));
+  updateNowPlaying(sortedQueue);
+
+  if (sortedQueue.length === 0) {
+    list.innerHTML = '<p class="empty-msg">La file est vide — ajoute un morceau 🎧</p>';
+    return;
+  }
+
+  sortedQueue.forEach((item, i) => {
+    const div = document.createElement("div");
+    div.className = "item" + (i === 0 ? " playing" : "");
+    div.draggable = isDJ;
+
+    const alreadyVoted = localStorage.getItem("voted_" + item.id);
+    const previewAttr = escapeHtml(item.preview || "");
+
+    div.innerHTML = `
+      <div class="row">
+        <div class="left">
+          <strong>${i === 0 ? "▶" : i + 1}. ${escapeHtml(item.song)}</strong>
+          <small>${escapeHtml(item.name)}</small>
+        </div>
+        <div class="right">
+          <button class="icon-btn play" type="button" data-preview="${previewAttr}" aria-label="Écouter">▶</button>
+          <button class="icon-btn fire${alreadyVoted ? " active" : ""}" type="button" data-id="${escapeHtml(item.id)}" aria-label="Voter">🔥</button>
+          <span class="votes">${item.votes || 0}</span>
+          ${isDJ ? `<button class="icon-btn delete" type="button" data-id="${escapeHtml(item.id)}" aria-label="Supprimer">✕</button>` : ""}
+        </div>
+      </div>`;
+
+    div.querySelector(".play")?.addEventListener("click", function () {
+      playPreview(this.dataset.preview, this);
+    });
+    div.querySelector(".fire")?.addEventListener("click", function () {
+      boost(this.dataset.id);
+    });
+    div.querySelector(".delete")?.addEventListener("click", function () {
+      remove(this.dataset.id);
+    });
+
+    if (isDJ) {
+      div.addEventListener("dragstart", () => { draggedIndex = i; });
+      div.addEventListener("dragover", e => e.preventDefault());
+      div.addEventListener("drop", () => {
+        if (draggedIndex === null || draggedIndex === i) return;
+        const moved = queue.splice(draggedIndex, 1)[0];
+        queue.splice(i, 0, moved);
+        const updated = {};
+        queue.forEach(q => { updated[q.id] = q; });
+        ref.set(updated);
+        draggedIndex = null;
+      });
+    }
+
+    list.appendChild(div);
+  });
+}
+
+/* Boot */
+window.onload = () => {
+  const roomStored = localStorage.getItem("room");
+  const isDJStored = localStorage.getItem("isDJ") === "true";
+
+  if (roomStored) {
+    showPage("app");
+    ref = db.ref("rooms/" + roomStored + "/queue");
+
+    ref.on("value", snap => {
+      const data = snap.val();
+      queue = data ? Object.entries(data).map(([id, val]) => ({ id, ...val })) : [];
+      render();
+    });
+
+    db.ref("rooms/" + roomStored + "/name").once("value", snap => {
+      const name = snap.val();
+      document.getElementById("roomNameDisplay").textContent =
+        name ? "🎧 " + name : "🎧 Room " + roomStored;
+    });
+
+    return;
+  }
+
+  if (isDJStored) {
+    showPage("djRooms");
+    loadRooms();
+    return;
+  }
+
+  showPage("home");
+};
 </script>
-<div id="djCodeScreen" class="background" style="display:none;">
-
-  <h2 class="who">ENTER DJ CODE 🔒</h2>
-
-  <div id="codeDisplay" style="font-size:30px; letter-spacing:10px; margin-bottom:20px;">
-    ••••••
-  </div>
-
-  <div class="buttons" style="flex-direction:column; gap:15px;">
-
-    <div class="pad">
-
-  <div class="grid">
-    <button onclick="addDigit(1)">1</button>
-    <button onclick="addDigit(2)">2</button>
-    <button onclick="addDigit(3)">3</button>
-
-    <button onclick="addDigit(4)">4</button>
-    <button onclick="addDigit(5)">5</button>
-    <button onclick="addDigit(6)">6</button>
-
-    <button onclick="addDigit(7)">7</button>
-    <button onclick="addDigit(8)">8</button>
-    <button onclick="addDigit(9)">9</button>
-
-    <button class="wide" onclick="clearCode()">⌫</button>
-    <button onclick="addDigit(0)">0</button>
-    <button class="wide ok" onclick="validateCode()">OK</button>
-  </div>
-
-</div>
-
-  <button class="back" onclick="backToChoice()">⬅ Retour</button>
-
-</div>
 </body>
 </html>
